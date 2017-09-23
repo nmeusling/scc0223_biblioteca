@@ -5,7 +5,9 @@ set(CMAKE_C_STANDARD 99)
 
 set(SOURCE_FILES
         src/main.c
-        src/menu.c)
+        src/menu.c
+        src/library_dynamic.c
+        src/input.c)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 

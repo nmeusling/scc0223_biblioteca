@@ -1,73 +1,54 @@
-//
-// Created by nmeusling on 9/5/17.
-//
-
-#include <stdio.h>
-#include <string.h>
-
-#define MAX_NAME_SIZE 20
-#define MAX_NUSP_SIZE 12
-#define MAX_PHONE_SIZE 13
-#define MAX_EMAIL_SIZE 50
-#define MAX_TITLE_SIZE 50
-#define MAX_AUTHOR_SIZE 50
-#define MAX_EDITOR_SIZE 50
-#define MAX_ISBN_SIZE 20
-
-typedef struct{
-    char name[MAX_NAME_SIZE];
-    int nusp[MAX_NUSP_SIZE];
-    int phone[MAX_PHONE_SIZE];
-    char email[MAX_EMAIL_SIZE];
-} student;
-
-typedef struct{
-    char title[MAX_TITLE_SIZE];
-    char author[MAX_AUTHOR_SIZE];
-    char editor[MAX_EDITOR_SIZE];
-    char isbn[MAX_ISBN_SIZE];
-    int year;
-    int edition;
-    int count; //number of available copies, 0 if all checked out, 1, if one copy and available, 2 if two copies and both available
-    //wait list
-} book;
-
-void print_home();
-void print_menu();
-int get_selection();
-
-/** @brief Flushes any extra characters input by user
+/** @file menu.h
+ *  @brief Header file for menu.c
  *
- * If the user inputs more than the expected number of characters, the extra
- * character are disregarded to prevent errors from occurring during program
- * execution.
+ *  This file contains the declaration for the functions related to the menu.
+ *
+ *  @author Natalie Menato (10295051)
  */
-void flush_std_in(void);
 
-int get_student_info(student *stud);
+#include "input.h"
 
-int get_book_info(book *bk);
 
-void print_student(student *stud);
+
+/** @brief Prints welcome screen
+ *
+ * Prints the program's home screen, welcoming the user.
+ */
+void print_home();
+
+/** @brief Prints menu
+ *
+ * Prints the menu that shows all of the available actions
+ */
+void print_menu();
+
+/** @brief Completes user's desired action
+ *
+ * Prompts the user for their desired action and then calls all necessary
+ * functions to complete the action.
+ *
+ * @param student_list* studs current list of all students in library system
+ * @return 1 when action is completed, 0 to quit program
+ */
+int complete_action(student_list * studs);
+
+/** @brief Registers a new system into the library system
+ *
+ * Prompts user for the new student's info. Then calls function to create the
+ * student and insert them into student list.
+ *
+ * @param student_list* studs current list of all students in library system
+ * @return 1 if an error occurred during registration, 0 if student was
+ * registered successfully
+ */
+int register_student(student_list *studs);
+
+
+
+
+
+
+//void print_student(student *stud);
 
 void print_book(book *bk);
 
-void get_name(char *name);
-
-void get_nusp(int *nusp);
-
-void get_phone(int *phone);
-
-void get_email(char *email);
-
-void get_title(char *title);
-
-void get_author(char *author);
-
-void get_editor(char *editor);
-
-void get_isbn(char *isbn);
-
-void get_year(int *year);
-
-void get_edition(int *edition);

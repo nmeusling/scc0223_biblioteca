@@ -1,17 +1,27 @@
-//
-// Created by nmeusling on 9/5/17.
-//
+/** @file menu.c
+ *  @brief Contains functions related to the menu
+ *
+ *  This file contains the functions related to the menu. These functions
+ *  allow the user to control the program and select the desired actions.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 
 #include "menu.h"
 
 
 
-
+/*
+ * Prints the welcome message.
+ */
 void print_home() {
     printf("Bem Vindo ao Sistema Biblioteca!\n" \
            "----------------------------------\n");
 }
 
+/*
+ * Prints the possible menu actions.
+ */
 void print_menu() {
     printf("Acoes possiveis: \n" \
            "1. Cadastrar Aluno\n" \
@@ -24,167 +34,88 @@ void print_menu() {
            "8. Sair do Sistema\n");
 }
 
-int get_selection() {
-    printf("\nQual acao voce gostaria de fazer?: ");
-    //convert from char into the int it represtne
-    int input = getchar() - 48;
-    flush_std_in();
-    while(input < 1 || input > 8)
-    {
-        printf("\nOpcao Invalida! Por favor, digite de novo: ");
-        input = getchar() - 48;
-        flush_std_in();
+/*
+ * Gets the user's desired action and completes it. Returns 1 when action is
+ * completed. Returns 0 if the desired action is to quit.
+ */
+int complete_action(student_list * studs){
+    print_menu();
+    int selection = get_selection();
+    switch(selection){
+        case 1:
+            register_student(studs);
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        default:
+            return  0;
     }
-    return input;
+    return 1;
 }
 
 /*
- * Flushes any extra characters input by the user to prevent input errors from
- * causing runtime errors.
+ * Prompts user to input information for the new student. Creates a new
+ * student and adds the student to the list of students. Returns 0 if student
+ * was registered with success, returns 0 if an error occurred.
  */
-void flush_std_in() {
-        int ch;
-        while (((ch = getchar()) != '\n') && (ch != EOF));
-}
-
-int get_student_info(student *stud){
+int register_student(student_list *studs){
 
     printf("\nPorfavor, digite os dados para o aluno novo: ");
+    char name[MAX_NAME_SIZE];
+    int nusp[MAX_NUSP_SIZE];
+    int phone[MAX_PHONE_SIZE];
+    char email[MAX_EMAIL_SIZE];
 
-    get_name(stud->name);
-    get_nusp((stud->nusp));
-    get_phone(stud->phone);
-    get_email(stud->email);
+    get_name(name);
+    get_nusp(nusp);
+    get_phone(phone);
+    get_email(email);
 
+    if(insert_student(studs, name, nusp, phone, email) == 1) {
+        printf("Nao foi possivel registrar o estudante!");
+        return 1;
+    }
 
-    return 1;
+    return 0;
 }
 
-int get_book_info(book *bk){
-    printf("\nPorfavor, digite os dados para o livro novo: ");
-
-    get_title(bk->title);
-    get_author(bk->author);
-    get_editor(bk->editor);
-    get_isbn(bk->isbn);
-    get_year(&(bk->year));
-    get_edition(&(bk->edition));
 
 
-    return 1;
-}
 
-void get_name(char *name){
-    printf("\nNome: ");
-    fgets(name, MAX_NAME_SIZE, stdin);
-    //flush_std_in();
-}
 
-void get_nusp(int *nusp){
-    printf("Numero USP: ");
-//   while(scanf("%d", nusp) == 0){
-//        printf("Invalido! Digite de novo: ");
-//        flush_std_in();
+
+
+
+
+
+
+//void print_student(student *stud){
+//    int i;
+//    printf("\nNome: %s", stud->name);
+//    printf("Numero Usp: ");
+//    for(i = 0; i<MAX_NUSP_SIZE; i++){
+//        if((stud->nusp)[i] != -1){
+//            printf("%d", (stud->nusp)[i]);
+//        }
 //    }
-    //flush_std_in();
-
-    int i = 0;
-    int digit = getchar();
-    while(digit != '\n' && digit != 'EOF' && i<MAX_PHONE_SIZE){
-        if(digit - 48 >= 0 && digit - 48 <= 9){
-            nusp[i] = digit-48;
-            i++;
-        }
-        digit = getchar();
-    }
-    while(i<MAX_PHONE_SIZE){
-        nusp[i] = -1;
-        i++;
-    }
-    //flush_std_in();
-}
-
-void get_email(char *email){
-    printf("Email: ");
-    fgets(email, MAX_EMAIL_SIZE, stdin);
-    //flush_std_in();
-}
-
-void get_phone(int *phone){
-    printf("Numero de telefone: ");
-    int i = 0;
-    int digit = getchar();
-    while(digit != '\n' && digit != 'EOF' && i<MAX_PHONE_SIZE){
-        if(digit - 48 >= 0 && digit - 48 <= 9){
-            phone[i] = digit-48;
-            i++;
-        }
-        digit = getchar();
-    }
-    while(i<MAX_PHONE_SIZE){
-        phone[i] = -1;
-        i++;
-    }
-    //flush_std_in();
-}
-
-
-void get_title(char *title){
-    printf("\nTitulo: ");
-    fgets(title, MAX_TITLE_SIZE, stdin);
-    //flush_std_in();
-}
-
-void get_author(char *author){
-    printf("Autor: ");
-    fgets(author, MAX_AUTHOR_SIZE, stdin);
-    //flush_std_in();
-}
-
-void get_editor(char *editor){
-    printf("Editora: ");
-    fgets(editor, MAX_EDITOR_SIZE, stdin);
-    //flush_std_in();
-}
-
-void get_isbn(char *isbn){
-    printf("ISBN: ");
-    fgets(isbn, MAX_ISBN_SIZE, stdin);
-}
-
-void get_year(int *year){
-    printf("Year: ");
-    while(scanf("%d", year)==0){
-        printf("Invalido! Tenta de novo: ");
-    }
-    //flush_std_in();
-}
-
-void get_edition(int *edition) {
-    printf("Edition: ");
-
-    while (scanf("%d", edition) == 0) {
-        printf("Invalido! Tenta de novo: ");
-    }
-}
-
-void print_student(student *stud){
-    int i;
-    printf("\nNome: %s", stud->name);
-    printf("Numero Usp: ");
-    for(i = 0; i<MAX_NUSP_SIZE; i++){
-        if((stud->nusp)[i] != -1){
-            printf("%d", (stud->nusp)[i]);
-        }
-    }
-    printf("\nTelefone: ");
-    for(i = 0; i<MAX_PHONE_SIZE; i++){
-        if((stud->phone)[i] != -1){
-            printf("%d", (stud->phone)[i]);
-        }
-    }
-    printf("\nEmail: %s", stud->email);
-}
+//    printf("\nTelefone: ");
+//    for(i = 0; i<MAX_PHONE_SIZE; i++){
+//        if((stud->phone)[i] != -1){
+//            printf("%d", (stud->phone)[i]);
+//        }
+//    }
+//    printf("\nEmail: %s", stud->email);
+//}
 
 void print_book(book *bk){
     int i;
