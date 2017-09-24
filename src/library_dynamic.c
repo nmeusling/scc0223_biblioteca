@@ -73,6 +73,29 @@ int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
     return 1;
 }
 
+/* Searches for a student in the list with passed nusp, if found, pointer to
+ * the previous student in list is saved in prev_stud and 0 is returned. If it
+ * is not possible to find student, prev_stud will be Null and 1 is returned.
+ */
+int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
+                        student **prev_stud) {
+    student *s = studs->first;
+    //If the student is the first in the list
+    if (compare_int_array(nusp, s->nusp, MAX_NUSP_SIZE) == 0) {
+        *prev_stud = NULL;
+        return 0;
+    }
+    while(s->next != NULL){
+        if(compare_int_array(s->next->nusp, nusp, MAX_NUSP_SIZE) == 0){
+            *prev_stud = s;
+            return 0;
+        }
+        s = s->next;
+
+    }
+    return 1;
+}
+
 /* Removes student with name from student list. Returns 0 if student is removed
  * successfully. Returns 1 if it is not possible to remove the student
  */
@@ -102,6 +125,35 @@ int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]){
     return 0;
 }
 
+/* Removes student with nusp from student list. Returns 0 if student is removed
+ * successfully. Returns 1 if it is not possible to remove the student
+ */
+int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]){
+    student *prev_stud = NULL;
+    student *stud = studs->first;
+    //list is empty
+    if(stud == NULL){
+        return 1;
+    }
+    //student not found in list
+    if(search_student_nusp(studs, nusp, &prev_stud) == 1) {
+        return 1;
+    }
+    //student is 1st element
+    if(prev_stud == NULL) {
+        studs->first = stud->next;
+        free(stud);
+        //student was only element, list is not empty
+        if(studs->first == NULL)
+            studs->last = NULL;
+        return 0;
+    }
+    stud = prev_stud->next;
+    prev_stud->next = stud->next;
+    free(stud);
+    return 0;
+}
+
 /*
  * Copies elements of array2 into array1. Array1 and Array2 must have size
  * elements.
@@ -111,4 +163,16 @@ void copy_int_array(int *array1, int *array2, int size) {
     for (i = 0; i < size; i++) {
         array1[i] = array2[i];
     }
+}
+
+/*Compares the elements of array 1 with array 2. Returns 0 if they are the same,
+ * 1 if they are different.
+ */
+int compare_int_array(int *array1, int *array2, int size){
+    int i;
+    for(i=0; i<size; i++){
+        if(array1[i] != array2[i])
+            return 1;
+    }
+    return 0;
 }

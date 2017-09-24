@@ -10,7 +10,6 @@
 #include "menu.h"
 
 
-
 /*
  * Prints the welcome message.
  */
@@ -38,10 +37,10 @@ void print_menu() {
  * Gets the user's desired action and completes it. Returns 1 when action is
  * completed. Returns 0 if the desired action is to quit.
  */
-int complete_action(student_list * studs){
+int complete_action(student_list *studs) {
     print_menu();
     int selection = get_selection();
-    switch(selection){
+    switch (selection) {
         case 1:
             register_student(studs);
             break;
@@ -59,7 +58,7 @@ int complete_action(student_list * studs){
         case 7:
             break;
         default:
-            return  0;
+            return 0;
     }
     return 1;
 }
@@ -69,7 +68,7 @@ int complete_action(student_list * studs){
  * student and adds the student to the list of students. Returns 0 if student
  * was registered with success, returns 0 if an error occurred.
  */
-int register_student(student_list *studs){
+int register_student(student_list *studs) {
 
     printf("\nPorfavor, digite os dados para o aluno novo: ");
     char name[MAX_NAME_SIZE];
@@ -82,7 +81,7 @@ int register_student(student_list *studs){
     get_phone(phone);
     get_email(email);
 
-    if(insert_student(studs, name, nusp, phone, email) == 1) {
+    if (insert_student(studs, name, nusp, phone, email) == 1) {
         printf("\nNao foi possivel registrar o estudante!");
         return 1;
     }
@@ -90,18 +89,53 @@ int register_student(student_list *studs){
     return 0;
 }
 
-int remove_student(student_list *studs){
-    char name[MAX_NAME_SIZE];
-    printf("Digite o nome do estudante que vc quer remover: ");
-    get_name(name);
-    if(remove_student_name(studs, name) == 1){
-        printf("\nNao foi possivel remover o estudante!");
-        return 1;
+int remove_student(student_list *studs) {
+    int type = get_remove_type();
+
+    switch (type) {
+        case 1:
+            if (menu_remove_student_name(studs) == 1)
+                printf("\nNao foi possivel remover o estudante!");
+            else
+                printf("\nEstudante foi removido!");
+            break;
+        case 2:
+            if (menu_remove_student_nusp(studs) == 1)
+                printf("\nNao foi possivel remover o estudante!");
+            else
+                printf("\nEstudante foi removido!");
+            break;
+        default:
+            return 0;
     }
-    printf("\nEstudante removido!");
+
     return 0;
 
 }
+
+int menu_remove_student_name(student_list *studs) {
+    char name[MAX_NAME_SIZE];
+    printf("Digite o nome do estudante que voce quer remover: ");
+    get_name(name);
+    if (remove_student_name(studs, name) == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+int menu_remove_student_nusp(student_list *studs) {
+    int nusp[MAX_NUSP_SIZE];
+    printf("Digite o NUSP do estudante que voce quer remover: ");
+    get_nusp(nusp);
+    if (remove_student_nusp(studs, nusp) == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+
+
+
 
 
 
@@ -130,7 +164,7 @@ int remove_student(student_list *studs){
 //    printf("\nEmail: %s", stud->email);
 //}
 
-void print_book(book *bk){
+void print_book(book *bk) {
     int i;
     printf("\nTitulo: %s", bk->title);
     printf("Autor: %s", bk->author);

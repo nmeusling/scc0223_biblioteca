@@ -34,6 +34,25 @@ void flush_std_in() {
     while (((ch = getchar()) != '\n') && (ch != EOF));
 }
 
+
+int get_remove_type(){
+    printf("\nRemover Aluno: ");
+    printf("\n1 - Remover por nome");
+    printf("\n2 - Remover por Numero USP");
+    printf("\n3 - Voltar ao Menu Principal");
+    printf("\nQual acao voce gostaria de fazer?: ");
+    //convert from char into the int that it represents
+    int input = getchar() - 48;
+    flush_std_in();
+    while(input < 1 || input > 3)
+    {
+        printf("\nOpcao Invalida! Por favor, digite de novo: ");
+        input = getchar() - 48;
+        flush_std_in();
+    }
+    return input;
+}
+
 /*
  * Prompt user to enter name. Save the name to passed array.
  */

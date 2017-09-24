@@ -110,6 +110,9 @@ int insert_student(student_list *studs, char name[MAX_NAME_SIZE], int nusp[MAX_N
 int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
                         student **prev_stud);
 
+int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
+                        student **prev_stud);
+
 /** @brief Removes student with name name from the list
  *
  * Uses search function to find previous student in list and then remove the
@@ -123,6 +126,8 @@ int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
  */
 int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
 
+int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]);
+
 /** @brief Copies elements of an int array to a second int array
  *
  * Copies elements from array2 to array 1. Both arrays must have size
@@ -134,4 +139,8 @@ int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
  */
 void copy_int_array(int *array1, int *array2, int size);
 
+/*Compares the elements of array 1 with array 2. Returns 0 if they are the same,
+ * 1 if they are different.
+ */
+int compare_int_array(int *array1, int *array2, int size);
 #endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H

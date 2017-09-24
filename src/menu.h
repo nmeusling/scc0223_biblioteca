@@ -46,7 +46,9 @@ int register_student(student_list *studs);
 
 int remove_student(student_list *studs);
 
+int menu_remove_student_name(student_list *studs);
 
+int menu_remove_student_nusp(student_list *studs);
 
 
 //void print_student(student *stud);

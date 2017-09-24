@@ -30,6 +30,8 @@ int get_selection();
  */
 void flush_std_in();
 
+int get_remove_type();
+
 /** @brief Prompts user to enter student's name
  *
  * Prompts user to enter the name of the student.
