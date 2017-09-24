@@ -89,7 +89,11 @@ int register_student(student_list *studs) {
     return 0;
 }
 
-int remove_student(student_list *studs) {
+/*
+ * Prompts user how they would like to remove a student. Calls the appropriate
+ * function to delete the student based on user's selection.
+ */
+void remove_student(student_list *studs) {
     int type = get_remove_type();
 
     switch (type) {
@@ -106,13 +110,14 @@ int remove_student(student_list *studs) {
                 printf("\nEstudante foi removido!");
             break;
         default:
-            return 0;
+            return;
     }
-
-    return 0;
-
 }
 
+/*
+ * Prompts user to enter name of student to be deleted. Calls function to remove
+ * student. Returns 0 if student is removed, 0 if the deletion was not possible.
+ */
 int menu_remove_student_name(student_list *studs) {
     char name[MAX_NAME_SIZE];
     printf("Digite o nome do estudante que voce quer remover: ");
@@ -123,6 +128,10 @@ int menu_remove_student_name(student_list *studs) {
     return 0;
 }
 
+/*
+ * Prompts user to enter nusp of student to be deleted. Calls function to remove
+ * student. Returns 0 if student is removed, 0 if the deletion was not possible.
+ */
 int menu_remove_student_nusp(student_list *studs) {
     int nusp[MAX_NUSP_SIZE];
     printf("Digite o NUSP do estudante que voce quer remover: ");

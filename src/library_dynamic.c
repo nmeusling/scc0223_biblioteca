@@ -154,8 +154,7 @@ int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]){
     return 0;
 }
 
-/*
- * Copies elements of array2 into array1. Array1 and Array2 must have size
+/* Copies elements of array2 into array1. Array1 and Array2 must have size
  * elements.
  */
 void copy_int_array(int *array1, int *array2, int size) {
@@ -165,7 +164,7 @@ void copy_int_array(int *array1, int *array2, int size) {
     }
 }
 
-/*Compares the elements of array 1 with array 2. Returns 0 if they are the same,
+/* Compares the elements of array 1 with array 2. Returns 0 if they are the same,
  * 1 if they are different.
  */
 int compare_int_array(int *array1, int *array2, int size){

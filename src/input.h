@@ -30,6 +30,12 @@ int get_selection();
  */
 void flush_std_in();
 
+/** @brief Prompts user to enter how they want to remove student
+ *
+ * Prompts user to enter how they want to remove the student. User can select to
+ * remove by name or nusp.
+ * @return 1 to remove by name, 2 to remove by nusp, 3 to return to menu
+ */
 int get_remove_type();
 
 /** @brief Prompts user to enter student's name

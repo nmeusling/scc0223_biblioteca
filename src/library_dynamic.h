@@ -98,7 +98,7 @@ int insert_student(student_list *studs, char name[MAX_NAME_SIZE], int nusp[MAX_N
 /** @brief Searches for student with name in the list
  *
  * Searches for a student in the student list whose name is the same as the
- * name passed to teh function. Previous student in the list is saved to passed
+ * name passed to the function. Previous student in the list is saved to passed
  * parameter prev_stud.
  *
  * @param student_list* studs student list where student will be searched
@@ -110,10 +110,22 @@ int insert_student(student_list *studs, char name[MAX_NAME_SIZE], int nusp[MAX_N
 int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
                         student **prev_stud);
 
+/** @brief Searches for student with nusp in the list
+ *
+ * Searches for a student in the student list whose nusp is the same as the
+ * nusp passed to the function. Previous student in the list is saved to passed
+ * parameter prev_stud.
+ *
+ * @param student_list* studs student list where student will be searched
+ * @param int[] nusp nusp of student to be searched
+ * @param student** prev_stud pointer to the pointer of the previous student, will
+ * be NULL if student is not in list or student is first element in list
+ * @return 0 if student is found on list, 1 otherwise
+ */
 int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
                         student **prev_stud);
 
-/** @brief Removes student with name name from the list
+/** @brief Removes student with name from the list
  *
  * Uses search function to find previous student in list and then remove the
  * desired student.
@@ -126,6 +138,17 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
  */
 int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
 
+/** @brief Removes student with nusp from the list
+ *
+ * Uses search function to find previous student in list and then remove the
+ * desired student.
+ *
+ * @param student_list* studs student list where student will be removed
+ * @param int[] nusp nusp of student to be removed
+ * @param student** prev_stud pointer to the pointer of the previous student, will
+ * be NULL if student is not in list or student is first element in list
+ * @return 0 if student removed successfully, 1 otherwise
+ */
 int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]);
 
 /** @brief Copies elements of an int array to a second int array
@@ -139,8 +162,15 @@ int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]);
  */
 void copy_int_array(int *array1, int *array2, int size);
 
-/*Compares the elements of array 1 with array 2. Returns 0 if they are the same,
- * 1 if they are different.
+/** @brief Compares two int arrays to see if they are the same
+ *
+ * Compares the elements of array 1 with array 2 to see if the arrays contain
+ * the same elements in the same order.
+ *
+ * @param int* array1 first array to be compared
+ * @param int* array2 second array to be compated
+ * @param int size number of elements to be compared
+ * @return 0 if the arrays are the same, 1 if they are different
  */
 int compare_int_array(int *array1, int *array2, int size);
 #endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H

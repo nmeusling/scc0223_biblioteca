@@ -34,7 +34,11 @@ void flush_std_in() {
     while (((ch = getchar()) != '\n') && (ch != EOF));
 }
 
-
+/*
+ * Prompts user to enter how they want to remove the student. Returns 1 if
+ * user wants to remove by name, 2 if user wants to remove by NUSP, 3 if the
+ * user wants to return to main menu.
+ */
 int get_remove_type(){
     printf("\nRemover Aluno: ");
     printf("\n1 - Remover por nome");
