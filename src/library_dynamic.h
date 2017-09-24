@@ -27,18 +27,6 @@
 #define MAX_ISBN_SIZE 20
 
 
-
-typedef struct{
-    char title[MAX_TITLE_SIZE];
-    char author[MAX_AUTHOR_SIZE];
-    char editor[MAX_EDITOR_SIZE];
-    char isbn[MAX_ISBN_SIZE];
-    int year;
-    int edition;
-    int count; //number of available copies, 0 if all checked out, 1, if one copy and available, 2 if two copies and both available
-    //wait list
-} book;
-
 /** @struct student
  *  @brief Stores all of the information related to a student
  *  @var student::name
@@ -52,13 +40,14 @@ typedef struct{
  *  Member 'email' string that stores student's email
  *  Member 'next' pointer to the next student in the student list
  */
-typedef struct _student{
+typedef struct _student {
     char name[MAX_NAME_SIZE];
     int nusp[MAX_NUSP_SIZE];
     int phone[MAX_PHONE_SIZE];
     char email[MAX_EMAIL_SIZE];
     struct _student *next;
 } student;
+
 
 /** @struct student_list
  *  @brief List to store student nodes
@@ -67,9 +56,53 @@ typedef struct _student{
  *  Member 'first' pointer to the first student node of list
  *  Member 'last' pointer to the last student node of list
  */
-typedef struct{
+typedef struct {
     student *first, *last;
 } student_list;
+
+
+/** @struct book
+ *  @brief Stores all of the information related to a book
+ *  @var student::title
+ *  @var student::author
+ *  @var student::editor
+ *  @var student::isbn
+ *  @var student::year
+ *  @var student::edition
+ *  @var student::count
+ *  @var student::next
+ *  Member 'title' string that stores title of book
+ *  Member 'author' string that stores the author of book
+ *  Member 'editor' string that stores the editor of book
+ *  Member 'isbn' string that stores the ISBN of book
+ *  Member 'year' int that stores the year of book
+ *  Member 'edition' int that stores the edition of book
+ *  Member 'next' pointer to the next book in the book list
+ */
+typedef struct _book {
+    char title[MAX_TITLE_SIZE];
+    char author[MAX_AUTHOR_SIZE];
+    char editor[MAX_EDITOR_SIZE];
+    int isbn[MAX_ISBN_SIZE];
+    int year;
+    int edition;
+    int count; // 0 if none currently available (i.e. all books are checked out)
+    //wait list
+    struct _book *next;
+} book;
+
+
+/** @struct book
+ *  @brief List to store book nodes
+ *  @var book_list::first
+ *  @var book_list::last
+ *  Member 'first' pointer to the first book node of list
+ *  Member 'last' pointer to the last book node of list
+ */
+typedef struct {
+    book *first, *last;
+} book_list;
+
 
 /** @brief Creates a new student list
  *
@@ -79,6 +112,7 @@ typedef struct{
  * @param student_list* studs pointer to student list to be initialized
  */
 void create_stud_list(student_list *studs);
+
 
 /** @brief Creates a new student and adds it to student list
  *
@@ -93,7 +127,10 @@ void create_stud_list(student_list *studs);
  * @param char[] email Email of student to be added
  * @return 1 if an error occurred, 0 if student inserted successfully
  */
-int insert_student(student_list *studs, char name[MAX_NAME_SIZE], int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE], char email[MAX_EMAIL_SIZE]);
+int insert_student(student_list *studs, char name[MAX_NAME_SIZE],
+                   int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
+                   char email[MAX_EMAIL_SIZE]);
+
 
 /** @brief Searches for student with name in the list
  *
@@ -110,6 +147,7 @@ int insert_student(student_list *studs, char name[MAX_NAME_SIZE], int nusp[MAX_N
 int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
                         student **prev_stud);
 
+
 /** @brief Searches for student with nusp in the list
  *
  * Searches for a student in the student list whose nusp is the same as the
@@ -125,6 +163,7 @@ int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
 int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
                         student **prev_stud);
 
+
 /** @brief Removes student with name from the list
  *
  * Uses search function to find previous student in list and then remove the
@@ -137,6 +176,7 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
  * @return 0 if student removed successfully, 1 otherwise
  */
 int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
+
 
 /** @brief Removes student with nusp from the list
  *
@@ -151,6 +191,93 @@ int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
  */
 int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]);
 
+
+/** @brief Creates a new book list
+ *
+ * Initializes a book_list so that the other functions for the list can be
+ * used.
+ *
+ * @param book_list* studs pointer to book list to be initialized
+ */
+void create_book_list(book_list *books);
+
+
+/** @brief Creates a new book and adds it to book list
+ *
+ * Allocates memory for a new book. Saves the passed title, author, editor,
+ * isbn, year, and edition to the new book. Adds the new book to the end of
+ * existing book list.
+ *
+ * @param book_list* books book list where book will be added
+ * @param char[] title title of the book to be added
+ * @param char[] author author of the book to be added
+ * @param char[] editor editor of the book to be added
+ * @param int[] isbn ISBN of the book to be added
+ * @param int year year of the book to be added
+ * @param int edition edition of the book to be added
+ * @return 1 if an error occurred, 0 if student inserted successfully
+ */
+int insert_book(book_list *books, char title[MAX_TITLE_SIZE],
+                char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
+                int isbn[MAX_ISBN_SIZE], int year, int edition);
+
+
+/** @brief Searches for book with title in the list
+ *
+ * Searches for a book in the book list whose title is the same as the
+ * title passed to the function. Previous book in the list is saved to passed
+ * parameter prev_book.
+ *
+ * @param book_list* books book list where book will be searched
+ * @param char[] title title of book to be searched
+ * @param book** prev_book pointer to the pointer of the previous book, will
+ * be NULL if book is not in list or book is first element in list
+ * @return 0 if book is found on list, 1 otherwise
+ */
+int search_book_title(book_list *bks, char title[MAX_TITLE_SIZE],
+                      book **prev_book);
+
+
+/** @brief Searches for book with ISBN in the list
+ *
+ * Searches for a book in the book list whose ISBN is the same as the
+ * ISBN passed to the function. Previous book in the list is saved to passed
+ * parameter prev_book.
+ *
+ * @param book_list* books book list where book will be searched
+ * @param int[] isbn ISBN of book to be searched
+ * @param book** prev_book pointer to the pointer of the previous book, will
+ * be NULL if book is not in list or book is first element in list
+ * @return 0 if book is found on list, 1 otherwise
+ */
+int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
+                     book **prev_book);
+
+
+/** @brief Removes book with title from the list
+ *
+ * Uses search function to find previous book in list and then remove the
+ * desired book.
+ *
+ * @param book_list* books book list where book will be removed
+ * @param char[] title title of book to be removed
+ * @return 0 if book removed successfully, 1 otherwise
+ */
+int remove_book_title(book_list *books, char title[MAX_TITLE_SIZE]);
+
+
+/** @brief Removes book with ISBN from the list
+ *
+ * Uses search function to find previous book in list and then remove the
+ * desired book.
+ *
+ * @param book_list* books book list where book will be removed
+ * @param int[] isbn ISBN of book to be removed
+ * @return 0 if book removed successfully, 1 otherwise
+ */
+int remove_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE]);
+
+
 /** @brief Copies elements of an int array to a second int array
  *
  * Copies elements from array2 to array 1. Both arrays must have size
@@ -161,6 +288,7 @@ int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]);
  * @param int size number of elements to be copied
  */
 void copy_int_array(int *array1, int *array2, int size);
+
 
 /** @brief Compares two int arrays to see if they are the same
  *
@@ -173,4 +301,5 @@ void copy_int_array(int *array1, int *array2, int size);
  * @return 0 if the arrays are the same, 1 if they are different
  */
 int compare_int_array(int *array1, int *array2, int size);
+
 #endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H

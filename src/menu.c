@@ -37,7 +37,7 @@ void print_menu() {
  * Gets the user's desired action and completes it. Returns 1 when action is
  * completed. Returns 0 if the desired action is to quit.
  */
-int complete_action(student_list *studs) {
+int complete_action(student_list *studs, book_list *books) {
     print_menu();
     int selection = get_selection();
     switch (selection) {
@@ -45,12 +45,14 @@ int complete_action(student_list *studs) {
             register_student(studs);
             break;
         case 2:
+            register_book(books);
             break;
         case 3:
             break;
         case 4:
             break;
         case 5:
+            remove_book(books);
             break;
         case 6:
             remove_student(studs);
@@ -94,7 +96,7 @@ int register_student(student_list *studs) {
  * function to delete the student based on user's selection.
  */
 void remove_student(student_list *studs) {
-    int type = get_remove_type();
+    int type = get_remove_type_student();
 
     switch (type) {
         case 1:
@@ -142,43 +144,85 @@ int menu_remove_student_nusp(student_list *studs) {
     return 0;
 }
 
+/*
+ * Prompts user to input information for the new book. Creates a new
+ * book and adds the book to the list of books. Returns 0 if book
+ * was registered with success, returns 0 if an error occurred.
+ */
+int register_book(book_list *books) {
 
+    printf("\nPorfavor, digite os dados para o livro novo: ");
+    char title[MAX_TITLE_SIZE];
+    char author[MAX_AUTHOR_SIZE];
+    char editor[MAX_EDITOR_SIZE];
+    int isbn[MAX_ISBN_SIZE];
+    int year;
+    int edition;
 
+    get_title(title);
+    get_author(author);
+    get_editor(editor);
+    get_isbn(isbn);
+    get_year(&year);
+    get_edition(&edition);
 
+    if (insert_book(books, title, author, editor, isbn, year, edition) == 1) {
+        printf("\nNao foi possivel registrar o livro!");
+        return 1;
+    }
 
+    return 0;
+}
 
+/*
+ * Prompts user how they would like to remove a book. Calls the appropriate
+ * function to delete the book based on user's selection.
+ */
+void remove_book(book_list *books) {
+    int type = get_remove_type_book();
 
+    switch (type) {
+        case 1:
+            if (menu_remove_book_title(books) == 1)
+                printf("\nNao foi possivel remover o livro!");
+            else
+                printf("\nLivro foi removido!");
+            break;
+        case 2:
+            if (menu_remove_book_isbn(books) == 1)
+                printf("\nNao foi possivel remover o livro!");
+            else
+                printf("\nLivro foi removido!");
+            break;
+        default:
+            return;
+    }
+}
 
+/*
+ * Prompts user to enter name of book to be deleted. Calls function to remove
+ * book. Returns 0 if book is removed, 0 if the deletion was not possible.
+ */
+int menu_remove_book_title(book_list *books) {
+    char title[MAX_TITLE_SIZE];
+    printf("Digite o titulo do livro que voce quer remover: ");
+    get_title(title);
+    if (remove_book_title(books, title) == 1) {
+        return 1;
+    }
+    return 0;
+}
 
-
-
-
-
-
-//void print_student(student *stud){
-//    int i;
-//    printf("\nNome: %s", stud->name);
-//    printf("Numero Usp: ");
-//    for(i = 0; i<MAX_NUSP_SIZE; i++){
-//        if((stud->nusp)[i] != -1){
-//            printf("%d", (stud->nusp)[i]);
-//        }
-//    }
-//    printf("\nTelefone: ");
-//    for(i = 0; i<MAX_PHONE_SIZE; i++){
-//        if((stud->phone)[i] != -1){
-//            printf("%d", (stud->phone)[i]);
-//        }
-//    }
-//    printf("\nEmail: %s", stud->email);
-//}
-
-void print_book(book *bk) {
-    int i;
-    printf("\nTitulo: %s", bk->title);
-    printf("Autor: %s", bk->author);
-    printf("Editora: %s", bk->editor);
-    printf("ISBN: %s", bk->isbn);
-    printf("Ano: %d", bk->year);
-    printf("\nEdicao: %d", bk->edition);
+/*
+ * Prompts user to enter ISBN of book to be deleted. Calls function to remove
+ * book. Returns 0 if book is removed, 0 if the deletion was not possible.
+ */
+int menu_remove_book_isbn(book_list *books) {
+    int isbn[MAX_ISBN_SIZE];
+    printf("Digite o ISBN do livro que voce quer remover: ");
+    get_isbn(isbn);
+    if (remove_book_isbn(books, isbn) == 1) {
+        return 1;
+    }
+    return 0;
 }

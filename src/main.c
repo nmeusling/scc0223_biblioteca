@@ -36,21 +36,48 @@ void print_students(student_list *studs){
 
 }
 
+void print_book(book *bk) {
+    int i;
+    printf("\nTitulo: %s", bk->title);
+    printf("Autor: %s", bk->author);
+    printf("Editora: %s", bk->editor);
+    printf("ISBN: ");
+    for(i = 0; i<MAX_ISBN_SIZE; i++){
+        if((bk->isbn)[i] != -1){
+            printf("%d", (bk->isbn)[i]);
+        }
+    }
+    printf("\nAno: %d", bk->year);
+    printf("\nEdicao: %d", bk->edition);
+}
+
+void print_books(book_list *bks){
+    book *bk = bks->first;
+    while(bk != NULL) {
+        print_book(bk);
+        bk = bk->next;
+    }
+
+}
+
 int main(){
     print_home();
 
     student_list students;
+    book_list books;
     //student* prev_stud;
     //char name[MAX_NAME_SIZE];
     //get_name(name);
 
     create_stud_list(&students);
+    create_book_list(&books);
 //    register_student(&students);
 //    register_student(&students);
 //    register_student(&students);
 //    printf("Result of search: %d" ,search_student_name(&students, name, &prev_stud));
-    while(complete_action(&students)){
+    while(complete_action(&students, &books)){
        print_students(&students);
+        print_books(&books);
     }
 
 

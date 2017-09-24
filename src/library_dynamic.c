@@ -55,15 +55,15 @@ int insert_student(student_list *studs, char name[MAX_NAME_SIZE],
  * is not possible to find student, prev_stud will be Null and 1 is returned.
  */
 int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
-                   student **prev_stud) {
+                        student **prev_stud) {
     student *s = studs->first;
     //If the student is the first in the list
     if (strcmp(s->name, name) == 0) {
         *prev_stud = NULL;
         return 0;
     }
-    while(s->next != NULL){
-        if(strcmp(s->next->name, name) == 0){
+    while (s->next != NULL) {
+        if (strcmp(s->next->name, name) == 0) {
             *prev_stud = s;
             return 0;
         }
@@ -85,8 +85,8 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
         *prev_stud = NULL;
         return 0;
     }
-    while(s->next != NULL){
-        if(compare_int_array(s->next->nusp, nusp, MAX_NUSP_SIZE) == 0){
+    while (s->next != NULL) {
+        if (compare_int_array(s->next->nusp, nusp, MAX_NUSP_SIZE) == 0) {
             *prev_stud = s;
             return 0;
         }
@@ -99,23 +99,23 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
 /* Removes student with name from student list. Returns 0 if student is removed
  * successfully. Returns 1 if it is not possible to remove the student
  */
-int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]){
+int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]) {
     student *prev_stud = NULL;
     student *stud = studs->first;
     //list is empty
-    if(stud == NULL){
+    if (stud == NULL) {
         return 1;
     }
     //student not found in list
-    if(search_student_name(studs, name, &prev_stud) == 1) {
+    if (search_student_name(studs, name, &prev_stud) == 1) {
         return 1;
     }
     //student is 1st element
-    if(prev_stud == NULL) {
+    if (prev_stud == NULL) {
         studs->first = stud->next;
         free(stud);
         //student was only element, list is not empty
-        if(studs->first == NULL)
+        if (studs->first == NULL)
             studs->last = NULL;
         return 0;
     }
@@ -128,29 +128,170 @@ int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]){
 /* Removes student with nusp from student list. Returns 0 if student is removed
  * successfully. Returns 1 if it is not possible to remove the student
  */
-int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]){
+int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]) {
     student *prev_stud = NULL;
     student *stud = studs->first;
     //list is empty
-    if(stud == NULL){
+    if (stud == NULL) {
         return 1;
     }
     //student not found in list
-    if(search_student_nusp(studs, nusp, &prev_stud) == 1) {
+    if (search_student_nusp(studs, nusp, &prev_stud) == 1) {
         return 1;
     }
     //student is 1st element
-    if(prev_stud == NULL) {
+    if (prev_stud == NULL) {
         studs->first = stud->next;
         free(stud);
         //student was only element, list is not empty
-        if(studs->first == NULL)
+        if (studs->first == NULL)
             studs->last = NULL;
         return 0;
     }
     stud = prev_stud->next;
     prev_stud->next = stud->next;
     free(stud);
+    return 0;
+}
+
+
+/*
+ * Initializes a new list of book.
+ */
+void create_book_list(book_list *books) {
+    books->first = NULL;
+    books->last = NULL;
+}
+
+int insert_book(book_list *books, char title[MAX_TITLE_SIZE],
+                char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
+                int isbn[MAX_ISBN_SIZE], int year, int edition) {
+    book *b = (book *) malloc(sizeof(book));
+    if (b == NULL) {
+        return 1;
+    }
+
+    strcpy(b->title, title);
+    strcpy(b->author, author);
+    strcpy(b->editor, editor);
+    copy_int_array(b->isbn, isbn, MAX_ISBN_SIZE);
+    b->year = year;
+    b->edition = edition;
+
+    b->next = NULL;
+
+    //if list is currently empty
+    if (books->first == NULL) {
+        books->first = b;
+    } else { //list has at least one element already
+        books->last->next = b;
+    }
+    books->last = b;
+
+    return 0;
+}
+
+/* Searches for a book in the list with passed title, if found, pointer to
+ * the previous book in list is saved in prev_book and 0 is returned. If it
+ * is not possible to find book, prev_book will be Null and 1 is returned.
+ */
+int search_book_title(book_list *bks, char title[MAX_TITLE_SIZE],
+                        book **prev_book) {
+    book *b = bks->first;
+    //If the student is the first in the list
+    if (strcmp(b->title, title) == 0) {
+        *prev_book = NULL;
+        return 0;
+    }
+    while (b->next != NULL) {
+        if (strcmp(b->next->title, title) == 0) {
+            *prev_book = b;
+            return 0;
+        }
+        b = b->next;
+
+    }
+    return 1;
+}
+
+/* Searches for a book in the list with passed ISBN, if found, pointer to
+ * the previous book in list is saved in prev_book and 0 is returned. If it
+ * is not possible to find book, prev_book will be Null and 1 is returned.
+ */
+int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
+                        book **prev_book) {
+    book *b = books->first;
+    //If the student is the first in the list
+    if (compare_int_array(isbn, b->isbn, MAX_ISBN_SIZE) == 0) {
+        *prev_book = NULL;
+        return 0;
+    }
+    while (b->next != NULL) {
+        if (compare_int_array(b->next->isbn, isbn, MAX_NUSP_SIZE) == 0) {
+            *prev_book = b;
+            return 0;
+        }
+        b = b->next;
+
+    }
+    return 1;
+}
+
+/* Removes book with title from book list. Returns 0 if book is removed
+ * successfully. Returns 1 if it is not possible to remove the book.
+ */
+int remove_book_title(book_list *books, char title[MAX_TITLE_SIZE]) {
+    book *prev_book = NULL;
+    book *book = books->first;
+    //list is empty
+    if (book == NULL) {
+        return 1;
+    }
+    //student not found in list
+    if (search_book_title(books, title, &prev_book) == 1) {
+        return 1;
+    }
+    //student is 1st element
+    if (prev_book == NULL) {
+        books->first = book->next;
+        free(book);
+        //student was only element, list is not empty
+        if (books->first == NULL)
+            books->last = NULL;
+        return 0;
+    }
+    book = prev_book->next;
+    prev_book->next = book->next;
+    free(book);
+    return 0;
+}
+
+/* Removes book with ISBN from book list. Returns 0 if book is removed
+ * successfully. Returns 1 if it is not possible to remove the book
+ */
+int remove_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE]) {
+    book *prev_book = NULL;
+    book *book = books->first;
+    //list is empty
+    if (book == NULL) {
+        return 1;
+    }
+    //student not found in list
+    if (search_book_isbn(books, isbn, &prev_book) == 1) {
+        return 1;
+    }
+    //student is 1st element
+    if (prev_book == NULL) {
+        books->first = book->next;
+        free(book);
+        //student was only element, list is not empty
+        if (books->first == NULL)
+            books->last = NULL;
+        return 0;
+    }
+    book = prev_book->next;
+    prev_book->next = book->next;
+    free(book);
     return 0;
 }
 
@@ -167,10 +308,10 @@ void copy_int_array(int *array1, int *array2, int size) {
 /* Compares the elements of array 1 with array 2. Returns 0 if they are the same,
  * 1 if they are different.
  */
-int compare_int_array(int *array1, int *array2, int size){
+int compare_int_array(int *array1, int *array2, int size) {
     int i;
-    for(i=0; i<size; i++){
-        if(array1[i] != array2[i])
+    for (i = 0; i < size; i++) {
+        if (array1[i] != array2[i])
             return 1;
     }
     return 0;
