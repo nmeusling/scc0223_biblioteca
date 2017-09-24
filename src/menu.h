@@ -44,6 +44,7 @@ int complete_action(student_list * studs);
 int register_student(student_list *studs);
 
 
+int remove_student(student_list *studs);
 
 
 

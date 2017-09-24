@@ -95,6 +95,34 @@ void create_stud_list(student_list *studs);
  */
 int insert_student(student_list *studs, char name[MAX_NAME_SIZE], int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE], char email[MAX_EMAIL_SIZE]);
 
+/** @brief Searches for student with name in the list
+ *
+ * Searches for a student in the student list whose name is the same as the
+ * name passed to teh function. Previous student in the list is saved to passed
+ * parameter prev_stud.
+ *
+ * @param student_list* studs student list where student will be searched
+ * @param char[] name name of student to be searched
+ * @param student** prev_stud pointer to the pointer of the previous student, will
+ * be NULL if student is not in list or student is first element in list
+ * @return 0 if student is found on list, 1 otherwise
+ */
+int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
+                        student **prev_stud);
+
+/** @brief Removes student with name name from the list
+ *
+ * Uses search function to find previous student in list and then remove the
+ * desired student.
+ *
+ * @param student_list* studs student list where student will be removed
+ * @param char[] name name of student to be removed
+ * @param student** prev_stud pointer to the pointer of the previous student, will
+ * be NULL if student is not in list or student is first element in list
+ * @return 0 if student removed successfully, 1 otherwise
+ */
+int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
+
 /** @brief Copies elements of an int array to a second int array
  *
  * Copies elements from array2 to array 1. Both arrays must have size

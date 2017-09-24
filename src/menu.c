@@ -15,15 +15,15 @@
  * Prints the welcome message.
  */
 void print_home() {
-    printf("Bem Vindo ao Sistema Biblioteca!\n" \
-           "----------------------------------\n");
+    printf("\nBem Vindo ao Sistema Biblioteca!" \
+           "\n--------------------------------\n\n");
 }
 
 /*
  * Prints the possible menu actions.
  */
 void print_menu() {
-    printf("Acoes possiveis: \n" \
+    printf("\nAcoes possiveis: \n" \
            "1. Cadastrar Aluno\n" \
            "2. Cadastrar Livro\n" \
            "3. Retirar Livro\n" \
@@ -54,6 +54,7 @@ int complete_action(student_list * studs){
         case 5:
             break;
         case 6:
+            remove_student(studs);
             break;
         case 7:
             break;
@@ -82,13 +83,25 @@ int register_student(student_list *studs){
     get_email(email);
 
     if(insert_student(studs, name, nusp, phone, email) == 1) {
-        printf("Nao foi possivel registrar o estudante!");
+        printf("\nNao foi possivel registrar o estudante!");
         return 1;
     }
 
     return 0;
 }
 
+int remove_student(student_list *studs){
+    char name[MAX_NAME_SIZE];
+    printf("Digite o nome do estudante que vc quer remover: ");
+    get_name(name);
+    if(remove_student_name(studs, name) == 1){
+        printf("\nNao foi possivel remover o estudante!");
+        return 1;
+    }
+    printf("\nEstudante removido!");
+    return 0;
+
+}
 
 
 
