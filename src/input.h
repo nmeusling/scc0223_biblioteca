@@ -116,5 +116,8 @@ void get_year(int *year);
  */
 void get_edition(int *edition);
 
+int get_search_type_student();
+
+int get_search_type_book();
 
 #endif //SCC0223_BIBLIOTECA_INPUT_H

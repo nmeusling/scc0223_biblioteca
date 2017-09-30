@@ -48,6 +48,7 @@ int complete_action(student_list *studs, book_list *books) {
             register_book(books);
             break;
         case 3:
+            check_out_book(books, studs);
             break;
         case 4:
             break;
@@ -226,3 +227,63 @@ int menu_remove_book_isbn(book_list *books) {
     }
     return 0;
 }
+
+
+void check_out_book(book_list *books, student_list *studs) {
+    char name[MAX_NAME_SIZE];
+    int nusp[MAX_NUSP_SIZE];
+    char title[MAX_TITLE_SIZE];
+    int isbn[MAX_ISBN_SIZE];
+    student *stud;
+    book *book;
+    int type = get_search_type_student();
+
+    switch (type) {
+        case 1:
+            get_name(name);
+            if(get_student_by_name(studs, name, &stud) == 1) {
+                printf("Nao foi possivel achar o aluno!");
+                return;
+            }
+            break;
+        case 2:
+            get_nusp(nusp);
+            if(get_student_by_nusp(studs, nusp, &stud) ==1){
+                printf("Nao foi possivel achar o aluno!");
+                return;
+            }
+            break;
+        default:
+            return;
+            }
+    type = get_search_type_book();
+    switch(type){
+        case 1:
+            get_title(title);
+            if(get_book_by_title(books, title, &book) == 1){
+                printf("Nao foi possivel achar o livro!");
+                return;
+            }
+
+            break;
+        case 2:
+            get_isbn(isbn);
+            if(get_book_by_isbn(books, isbn, &book) == 1){
+                printf("Nao foi possivel achar o livro!");
+                return;
+            }
+        default:
+            return;
+    }
+    if(book == NULL || stud == NULL)
+        return;
+    if((book)->count > 0){
+        (book)->count --;
+    }
+    else{
+        add_to_waitlist(stud, &(book)->wl);
+    }
+
+}
+
+

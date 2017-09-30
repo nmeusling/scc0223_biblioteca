@@ -209,3 +209,39 @@ void get_edition(int *edition) {
         printf("Invalido! Tenta de novo: ");
     }
 }
+
+int get_search_type_student(){
+    printf("\nBuscar Aluno: ");
+    printf("\n1 - Buscar por Nome");
+    printf("\n2 - Buscar por Numero USP");
+    printf("\n3 - Voltar ao Menu Principal");
+    printf("\nQual acao voce gostaria de fazer?: ");
+    //convert from char into the int that it represents
+    int input = getchar() - 48;
+    flush_std_in();
+    while(input < 1 || input > 3)
+    {
+        printf("\nOpcao Invalida! Por favor, digite de novo: ");
+        input = getchar() - 48;
+        flush_std_in();
+    }
+    return input;
+}
+
+int get_search_type_book(){
+    printf("\nBuscar Livro: ");
+    printf("\n1 - Buscar por titulo");
+    printf("\n2 - Buscar por ISBN");
+    printf("\n3 - Voltar ao Menu Principal");
+    printf("\nQual acao voce gostaria de fazer?: ");
+    //convert from char into the int that it represents
+    int input = getchar() - 48;
+    flush_std_in();
+    while(input < 1 || input > 3)
+    {
+        printf("\nOpcao Invalida! Por favor, digite de novo: ");
+        input = getchar() - 48;
+        flush_std_in();
+    }
+    return input;
+}

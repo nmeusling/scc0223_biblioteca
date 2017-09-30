@@ -16,16 +16,27 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_NAME_SIZE 20
-#define MAX_NUSP_SIZE 12
-#define MAX_PHONE_SIZE 13
-#define MAX_EMAIL_SIZE 50
+#define MAX_NAME_SIZE 100
+#define MAX_NUSP_SIZE 15
+#define MAX_PHONE_SIZE 15
+#define MAX_EMAIL_SIZE 100
 
-#define MAX_TITLE_SIZE 50
-#define MAX_AUTHOR_SIZE 50
-#define MAX_EDITOR_SIZE 50
+#define MAX_TITLE_SIZE 100
+#define MAX_AUTHOR_SIZE 100
+#define MAX_EDITOR_SIZE 100
 #define MAX_ISBN_SIZE 20
 
+#define MAX_MESSAGE_SIZE 500
+
+
+typedef struct _email{
+    char message[MAX_MESSAGE_SIZE] ;
+    struct _email *next;
+}email;
+
+typedef struct{
+    email *top;
+}email_stack;
 
 /** @struct student
  *  @brief Stores all of the information related to a student
@@ -46,6 +57,7 @@ typedef struct _student {
     int phone[MAX_PHONE_SIZE];
     char email[MAX_EMAIL_SIZE];
     struct _student *next;
+    email_stack emails;
 } student;
 
 
@@ -60,6 +72,27 @@ typedef struct {
     student *first, *last;
 } student_list;
 
+/** @struct wait_list_entry
+ *  @brief Node for wait list
+ *  @var student::stud pointer to the student on wait list
+ *  @var wait_list_entry::next
+ *  Member 'next' pointer to the next student on wait list
+ */
+typedef struct _wait_list_entry{
+    student *stud;
+    struct _wait_list_entry *next;
+} wait_list_entry;
+
+/** @struct wait_list
+ *  @brief Queue to store all students that are on the wait list for a book
+ *  @var wait_list::first
+ *  @var wait_list::last
+ *  Member 'first' pointer to the first student node of wait list
+ *  Member 'last' pointer to the last student node of wait list
+ */
+typedef struct {
+    wait_list_entry *first, *last;
+} wait_list;
 
 /** @struct book
  *  @brief Stores all of the information related to a book
@@ -71,6 +104,7 @@ typedef struct {
  *  @var student::edition
  *  @var student::count
  *  @var student::next
+ *  @var wait_list::
  *  Member 'title' string that stores title of book
  *  Member 'author' string that stores the author of book
  *  Member 'editor' string that stores the editor of book
@@ -87,8 +121,8 @@ typedef struct _book {
     int year;
     int edition;
     int count; // 0 if none currently available (i.e. all books are checked out)
-    //wait list
     struct _book *next;
+    wait_list wl;
 } book;
 
 
@@ -102,7 +136,6 @@ typedef struct _book {
 typedef struct {
     book *first, *last;
 } book_list;
-
 
 /** @brief Creates a new student list
  *
@@ -301,5 +334,34 @@ void copy_int_array(int *array1, int *array2, int size);
  * @return 0 if the arrays are the same, 1 if they are different
  */
 int compare_int_array(int *array1, int *array2, int size);
+
+
+
+
+
+void create_wait_list(wait_list *wl);
+
+void remove_wait_list(wait_list *wl);
+
+int add_to_waitlist(student *stud, wait_list *wl);
+
+int remove_from_waitlist(student *stud, wait_list *wl);
+
+void create_email_stack(email_stack *emls);
+
+int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
+
+int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
+
+void delete_email_stack(email_stack *emls);
+
+int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud);
+
+int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud);
+
+int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk);
+
+int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk);
+
 
 #endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H

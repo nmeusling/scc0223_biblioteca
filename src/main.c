@@ -65,6 +65,9 @@ int main(){
 
     student_list students;
     book_list books;
+    student *stud;
+
+    char name[MAX_NAME_SIZE];
     //student* prev_stud;
     //char name[MAX_NAME_SIZE];
     //get_name(name);
@@ -75,9 +78,17 @@ int main(){
 //    register_student(&students);
 //    register_student(&students);
 //    printf("Result of search: %d" ,search_student_name(&students, name, &prev_stud));
+
+//    register_student(&students);
+//    register_student(&students);
+//    get_name(name);
+//    //search_student_name(&students, name, &stud);
+//    get_student_by_name(&students, name, &stud);
+//    printf("Success!");
+
     while(complete_action(&students, &books)){
-       print_students(&students);
-        print_books(&books);
+       //print_students(&students);
+        //print_books(&books);
     }
 
 
