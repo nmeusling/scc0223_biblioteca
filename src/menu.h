@@ -111,5 +111,8 @@ int menu_remove_book_title(book_list *books);
  */
 int menu_remove_book_isbn(book_list *books);
 
-void check_out_book(book_list *books, student_list *studs);
+int check_out_book(book_list *books, student_list *studs);
 
+int return_book(book_list *books, student_list *studs);
+
+int print_emails(student_list *studs);

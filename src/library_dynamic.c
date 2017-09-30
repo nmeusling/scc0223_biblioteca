@@ -32,7 +32,7 @@ int insert_student(student_list *studs, char name[MAX_NAME_SIZE],
         return 1;
     }
     create_email_stack(&s->emails);
-
+    create_stud_bklist(&s->bks);
     strcpy(s->name, name);
     copy_int_array(s->nusp, nusp, MAX_NUSP_SIZE);
     copy_int_array(s->phone, phone, MAX_PHONE_SIZE);
@@ -101,7 +101,7 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
     }
     return 1;
 }
-
+//todo remove student from all wait lists
 /* Removes student with name from student list. Returns 0 if student is removed
  * successfully. Returns 1 if it is not possible to remove the student
  */
@@ -128,10 +128,11 @@ int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]) {
     stud = prev_stud->next;
     prev_stud->next = stud->next;
     delete_email_stack(&stud->emails);
+    remove_stud_bklist(&stud->bks);
     free(stud);
     return 0;
 }
-
+//todo remove student from all wait lists
 /* Removes student with nusp from student list. Returns 0 if student is removed
  * successfully. Returns 1 if it is not possible to remove the student
  */
@@ -158,6 +159,7 @@ int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]) {
     stud = prev_stud->next;
     prev_stud->next = stud->next;
     delete_email_stack(&stud->emails);
+    remove_stud_bklist(&stud->bks);
     free(stud);
     return 0;
 }
@@ -171,6 +173,7 @@ void create_book_list(book_list *books) {
     books->last = NULL;
 }
 
+//todo deal with potential duplicates
 int insert_book(book_list *books, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition) {
@@ -415,7 +418,7 @@ int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     return 0;
 }
 
-//todo test and comment
+
 int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     if(emls->top == NULL)
         return 1;
@@ -425,19 +428,19 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     free(temp);
     return 0;
 }
- //todo test and comment
+
 void delete_email_stack(email_stack *emls){
     char *message = NULL;
     while(pop_email(emls, message) == 0);
 
 }
 
-//todo test and comment
+
 int send_email(student *stud, char message[MAX_MESSAGE_SIZE]){
     return push_email(&stud->emails, message);
 }
 
-//todo check this function
+
 int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud){
     student **prev ;
     if(search_student_name(studs, name, prev) == 1)
@@ -449,7 +452,7 @@ int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student *
     return 0;
 }
 
-//todo check this function
+
 int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud){
     student **prev ;
     if(search_student_nusp(studs, nusp, prev) == 1)
@@ -461,7 +464,7 @@ int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **
     return 0;
 }
 
-//todo check this function
+
 int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk){
     book **prev ;
     if(search_book_title(bks, title, prev) == 1)
@@ -473,7 +476,7 @@ int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk){
     return 0;
 }
 
-//todo check this function
+
 int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk){
     book **prev ;
     if(search_book_isbn(bks, isbn, prev) == 1)
@@ -483,4 +486,64 @@ int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk){
     else
         *bk = (*prev)->next;
     return 0;
+}
+
+
+/*
+ * Creates student's book list with initialized values.
+ */
+void create_stud_bklist(stud_bklist *bl){
+    bl->first = NULL;
+    bl->last = NULL;
+
+}
+
+/*
+ * Removes the wait list, freeing the memory used for the nodes.
+ */
+void remove_stud_bklist(stud_bklist *bl){
+    book * temp = NULL;
+    while(remove_from_stud_bklist(temp, bl) == 0);
+}
+
+/* Adds the student to the passed wait list. Returns 1 if an error occurred, 0
+ * if student was added successfully
+ */
+int add_to_stud_bklist(book *bk, stud_bklist *bl){
+    stud_bklist_entry *new_entry = (stud_bklist_entry *)malloc(sizeof (stud_bklist_entry));
+    if (new_entry == NULL)
+        return 1;
+    new_entry->bk = bk;
+    new_entry->next = NULL;
+    if(bl->first == NULL){
+        bl->first = new_entry;
+    }
+    else {
+        bl->last->next = new_entry;
+    }
+    bl->last = new_entry;
+    return 0;
+}
+//todo needs to search by book name
+/*
+ * Removes the first student from the waitlist. Returns 1 if an error occurs, 0
+ * if student is removed successfully. Saves student removed to stud.
+ */
+int remove_from_stud_bklist(book *bk, stud_bklist *bl){
+    if(bl->first == NULL)
+        return 1;
+
+    //possible error on this line
+    *bk = *bl->first->bk;
+    stud_bklist_entry *temp = bl->first;
+    if(bl->first->next == NULL){
+        bl->first = NULL;
+        bl->last = NULL;
+    }
+    else {
+        bl->first = bl->first->next;
+    }
+    free(temp);
+    return 0;
+
 }

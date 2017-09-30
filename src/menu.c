@@ -8,6 +8,7 @@
  */
 
 #include "menu.h"
+#include "library_dynamic.h"
 
 
 /*
@@ -51,6 +52,7 @@ int complete_action(student_list *studs, book_list *books) {
             check_out_book(books, studs);
             break;
         case 4:
+            return_book(books, studs);
             break;
         case 5:
             remove_book(books);
@@ -59,6 +61,7 @@ int complete_action(student_list *studs, book_list *books) {
             remove_student(studs);
             break;
         case 7:
+            print_emails(studs);
             break;
         default:
             return 0;
@@ -228,8 +231,8 @@ int menu_remove_book_isbn(book_list *books) {
     return 0;
 }
 
-
-void check_out_book(book_list *books, student_list *studs) {
+//todo improve TAD to give user less access
+int check_out_book(book_list *books, student_list *studs) {
     char name[MAX_NAME_SIZE];
     int nusp[MAX_NUSP_SIZE];
     char title[MAX_TITLE_SIZE];
@@ -243,18 +246,18 @@ void check_out_book(book_list *books, student_list *studs) {
             get_name(name);
             if(get_student_by_name(studs, name, &stud) == 1) {
                 printf("Nao foi possivel achar o aluno!");
-                return;
+                return 1;
             }
             break;
         case 2:
             get_nusp(nusp);
             if(get_student_by_nusp(studs, nusp, &stud) ==1){
                 printf("Nao foi possivel achar o aluno!");
-                return;
+                return 1;
             }
             break;
         default:
-            return;
+            return 0;
             }
     type = get_search_type_book();
     switch(type){
@@ -262,7 +265,7 @@ void check_out_book(book_list *books, student_list *studs) {
             get_title(title);
             if(get_book_by_title(books, title, &book) == 1){
                 printf("Nao foi possivel achar o livro!");
-                return;
+                return 1;
             }
 
             break;
@@ -270,20 +273,121 @@ void check_out_book(book_list *books, student_list *studs) {
             get_isbn(isbn);
             if(get_book_by_isbn(books, isbn, &book) == 1){
                 printf("Nao foi possivel achar o livro!");
-                return;
+                return 1;
             }
         default:
-            return;
+            return 0;
     }
     if(book == NULL || stud == NULL)
-        return;
+        return 1;
     if((book)->count > 0){
         (book)->count --;
+        add_to_stud_bklist(book, &stud->bks);
     }
     else{
         add_to_waitlist(stud, &(book)->wl);
     }
+    return 0;
 
 }
 
+//todo improve TAD to give user less access
+int return_book(book_list *books, student_list *studs) {
+    char name[MAX_NAME_SIZE];
+    int nusp[MAX_NUSP_SIZE];
+    char title[MAX_TITLE_SIZE];
+    int isbn[MAX_ISBN_SIZE];
+    student *stud;
+    book *book;
+    int type = get_search_type_student();
 
+    switch (type) {
+        case 1:
+            get_name(name);
+            if(get_student_by_name(studs, name, &stud) == 1) {
+                printf("Nao foi possivel achar o aluno!");
+                return 1;
+            }
+            break;
+        case 2:
+            get_nusp(nusp);
+            if(get_student_by_nusp(studs, nusp, &stud) ==1){
+                printf("Nao foi possivel achar o aluno!");
+                return 1;
+            }
+            break;
+        default:
+            return 0;
+    }
+    type = get_search_type_book();
+    switch(type){
+        case 1:
+            get_title(title);
+            if(get_book_by_title(books, title, &book) == 1){
+                printf("Nao foi possivel achar o livro!");
+                return 1;
+            }
+
+            break;
+        case 2:
+            get_isbn(isbn);
+            if(get_book_by_isbn(books, isbn, &book) == 1){
+                printf("Nao foi possivel achar o livro!");
+                return 1;
+            }
+        default:
+            return 0;
+    }
+    if(book == NULL || stud == NULL)
+        return 1;
+    if(book->wl.first == NULL){
+        (book)->count ++;
+    }
+    else{
+        student *next = book->wl.first->stud;
+        push_email(&next->emails, "Um livro esta pronto para voce retirar!");
+        remove_from_waitlist(next, &book->wl);
+    }
+    remove_from_stud_bklist(book, &stud->bks);
+    return 0;
+
+}
+
+int print_emails(student_list *studs){
+    char name[MAX_NAME_SIZE];
+    int nusp[MAX_NUSP_SIZE];
+    student *stud;
+
+    int type = get_search_type_student();
+
+    switch (type) {
+        case 1:
+            get_name(name);
+            if(get_student_by_name(studs, name, &stud) == 1) {
+                printf("Nao foi possivel achar o aluno!");
+                return 1;
+            }
+            break;
+        case 2:
+            get_nusp(nusp);
+            if(get_student_by_nusp(studs, nusp, &stud) ==1){
+                printf("Nao foi possivel achar o aluno!");
+                return 1;
+            }
+            break;
+        default:
+            return 0;
+    }
+    email_stack temp;
+    char message[MAX_MESSAGE_SIZE];
+    while(stud->emails.top != NULL){
+        pop_email(&stud->emails, message);
+        printf("\n%s", message);
+        push_email(&temp, message);
+    }
+    while(temp.top !=NULL){
+        pop_email(&temp, message);
+        push_email(&stud->emails, message);
+    }
+    return 0;
+}

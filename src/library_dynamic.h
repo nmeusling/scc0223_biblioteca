@@ -28,6 +28,31 @@
 
 #define MAX_MESSAGE_SIZE 500
 
+typedef struct _book book;
+
+/** @struct stud_bklist_entry
+ *  @brief Node for list of books checked out by student
+ *  @var book::bk pointer to the book on student's list
+ *  @var stud_bklist_entry::next
+ *  Member 'next' pointer to the next student on wait list
+ */
+typedef struct _stud_bklist_entry{
+    book *bk;
+    struct _stud_bklist_entry *next;
+} stud_bklist_entry;
+
+typedef struct _stud_bklist stud_bklist;
+
+/** @struct stud_bklist
+ *  @brief List to store all books a student has checked out
+ *  @var stud_bklist::first
+ *  @var stud_bklist::last
+ *  Member 'first' pointer to the first book entry of list
+ *  Member 'last' pointer to the last book entry of list
+ */
+struct _stud_bklist{
+    stud_bklist_entry *first, *last;
+};
 
 typedef struct _email{
     char message[MAX_MESSAGE_SIZE] ;
@@ -58,6 +83,8 @@ typedef struct _student {
     char email[MAX_EMAIL_SIZE];
     struct _student *next;
     email_stack emails;
+    stud_bklist bks;
+
 } student;
 
 
@@ -113,7 +140,7 @@ typedef struct {
  *  Member 'edition' int that stores the edition of book
  *  Member 'next' pointer to the next book in the book list
  */
-typedef struct _book {
+struct _book {
     char title[MAX_TITLE_SIZE];
     char author[MAX_AUTHOR_SIZE];
     char editor[MAX_EDITOR_SIZE];
@@ -123,7 +150,7 @@ typedef struct _book {
     int count; // 0 if none currently available (i.e. all books are checked out)
     struct _book *next;
     wait_list wl;
-} book;
+};
 
 
 /** @struct book
@@ -136,6 +163,7 @@ typedef struct _book {
 typedef struct {
     book *first, *last;
 } book_list;
+
 
 /** @brief Creates a new student list
  *
@@ -337,8 +365,6 @@ int compare_int_array(int *array1, int *array2, int size);
 
 
 
-
-
 void create_wait_list(wait_list *wl);
 
 void remove_wait_list(wait_list *wl);
@@ -362,6 +388,15 @@ int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **
 int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk);
 
 int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk);
+
+void create_stud_bklist(stud_bklist *bl);
+
+void remove_stud_bklist(stud_bklist *bl);
+
+int add_to_stud_bklist(book *bk, stud_bklist *bl);
+
+int remove_from_stud_bklist(book *bk, stud_bklist *bl);
+
 
 
 #endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H
