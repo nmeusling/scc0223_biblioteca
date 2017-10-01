@@ -101,6 +101,7 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
     }
     return 1;
 }
+
 /* Removes student with name from student list. Returns 0 if student is removed
  * successfully. Returns 1 if it is not possible to remove the student
  */
@@ -163,6 +164,12 @@ int remove_student_nusp(book_list *books, student_list *studs, int nusp[MAX_NUSP
     return 0;
 }
 
+/*
+ * Gets the name of the passed student and returns it as a string.
+ */
+char* get_stud_name(student *stud){
+    return stud->name;
+}
 
 /*
  * Initializes a new list of book. Retruns 2 if isbn is duplicated
@@ -172,7 +179,13 @@ void create_book_list(book_list *books) {
     books->last = NULL;
 }
 
-//if duplicate ISBN, increase count of book
+/*
+ * Allocates memory for a new book. Saves the passed title, author, editor,
+ * isbn, year, and edition to the new book. Adds the new book to the end of
+ * existing book list. If the ISBN is duplicated, a new record will not be
+ * added to the list. Instead the count of books of the original will be
+ * incremented.
+ */
 int insert_book(book_list *books, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition) {
@@ -321,27 +334,6 @@ int remove_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE]) {
     return 0;
 }
 
-/* Copies elements of array2 into array1. Array1 and Array2 must have size
- * elements.
- */
-void copy_int_array(int *array1, int *array2, int size) {
-    int i;
-    for (i = 0; i < size; i++) {
-        array1[i] = array2[i];
-    }
-}
-
-/* Compares the elements of array 1 with array 2. Returns 0 if they are the same,
- * 1 if they are different.
- */
-int compare_int_array(int *array1, int *array2, int size) {
-    int i;
-    for (i = 0; i < size; i++) {
-        if (array1[i] != array2[i])
-            return 1;
-    }
-    return 0;
-}
 
 /*
  * Creates the waitlist with initialized values.
@@ -406,6 +398,26 @@ int remove_from_waitlist(student *stud, wait_list *wl){
 }
 
 /*
+ * Checks the waitlist for each book and removes the student from any wait list
+ * they belong to
+ */
+void remove_student_all_waitlists(book_list *bks, student *stud){
+    book *pointer = bks->first;
+    student *temp;
+    int i;
+    //for all books
+    while(pointer != NULL){
+        for(i = 0; i<pointer->wl.total;i++){
+            remove_from_waitlist(temp, &pointer->wl);
+            if(temp != stud){
+                add_to_waitlist(temp, &pointer->wl);
+            }
+        }
+        pointer = pointer->next;
+    }
+}
+
+/*
  * Creates stack to store the email messages for a student.
  */
 void create_email_stack(email_stack *emls){
@@ -427,7 +439,10 @@ int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     return 0;
 }
 
-
+/*
+ * Removes the top message. Saves message of removed email to the passed
+ * parameter.
+ */
 int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     if(emls->top == NULL)
         return 1;
@@ -438,18 +453,30 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     return 0;
 }
 
+/*
+ * Clears the email stack and returns it to it's initial position, with top
+ * pointing to NULL. Frees the memory of all nodes that were part of the
+ * email stack.
+ */
 void delete_email_stack(email_stack *emls){
     char *message = NULL;
     while(pop_email(emls, message) == 0);
 
 }
 
-
-int send_email(student *stud, char message[MAX_MESSAGE_SIZE]){
-    return push_email(&stud->emails, message);
+/*
+ * Verifies if the email stick is empty
+ */
+int isEmailEmpty(email_stack *emls){
+    if(emls->top == NULL)
+        return 1;
+    return 0;
 }
 
-
+/*
+ * Searches for the student in the student list by name and saves the student
+ * to the passed student parameter if found.
+ */
 int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud){
     student *prev ;
     if(search_student_name(studs, name, &prev) == 1)
@@ -461,7 +488,10 @@ int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student *
     return 0;
 }
 
-
+/*
+ * Searches for the student by nusp in the student list and saves the student
+ * to the passed student parameter if found.
+ */
 int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud){
     student *prev ;
     if(search_student_nusp(studs, nusp, &prev) == 1)
@@ -473,7 +503,10 @@ int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **
     return 0;
 }
 
-
+/*
+ * Searches for the book in the book list by title and saves the book
+ * to the passed book parameter if found.
+ */
 int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk){
     book *prev ;
     if(search_book_title(bks, title, &prev) == 1)
@@ -485,7 +518,10 @@ int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk){
     return 0;
 }
 
-
+/*
+ * Searches for the book in the book list by isbn and saves the book
+ * to the passed book parameter if found.
+ */
 int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk){
     book *prev ;
     if(search_book_isbn(bks, isbn, &prev) == 1)
@@ -497,88 +533,25 @@ int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk){
     return 0;
 }
 
-void remove_student_all_waitlists(book_list *bks, student *stud){
-    book *pointer = bks->first;
-    student *temp;
-    int i;
-    //for all books
-    while(pointer != NULL){
-        for(i = 0; i<pointer->wl.total;i++){
-            remove_from_waitlist(temp, &pointer->wl);
-            if(temp != stud){
-                add_to_waitlist(temp, &pointer->wl);
-            }
-        }
-        pointer = pointer->next;
-    }
+/*
+ * Gets the title of the passed book and returns it as a string.
+ */
+char* get_book_title(book *bk){
+    return bk->title;
 }
-//
-///*
-// * Creates student's book list with initialized values.
-// */
-//void create_stud_bklist(stud_bklist *bl){
-//    bl->first = NULL;
-//    bl->last = NULL;
-//
-//}
-//
-///*
-// * Removes the wait list, freeing the memory used for the nodes.
-// */
-//void remove_stud_bklist(stud_bklist *bl){
-//    book * temp = NULL;
-//    while(remove_from_stud_bklist(temp, bl) == 0);
-//}
-//
-///* Adds the student to the passed wait list. Returns 1 if an error occurred, 0
-// * if student was added successfully
-// */
-//int add_to_stud_bklist(book *bk, stud_bklist *bl){
-//    stud_bklist_entry *new_entry = (stud_bklist_entry *)malloc(sizeof (stud_bklist_entry));
-//    if (new_entry == NULL)
-//        return 1;
-//    new_entry->bk = bk;
-//    new_entry->next = NULL;
-//    if(bl->first == NULL){
-//        bl->first = new_entry;
-//    }
-//    else {
-//        bl->last->next = new_entry;
-//    }
-//    bl->last = new_entry;
-//    return 0;
-//}
-////todo needs to search by book name
-///*
-// * Removes the first student from the waitlist. Returns 1 if an error occurs, 0
-// * if student is removed successfully. Saves student removed to stud.
-// */
-//int remove_from_stud_bklist(book *bk, stud_bklist *bl){
-//    if(bl->first == NULL)
-//        return 1;
-//
-//    //possible error on this line
-//    *bk = *bl->first->bk;
-//    stud_bklist_entry *temp = bl->first;
-//    if(bl->first->next == NULL){
-//        bl->first = NULL;
-//        bl->last = NULL;
-//    }
-//    else {
-//        bl->first = bl->first->next;
-//    }
-//    free(temp);
-//    return 0;
-//
-//}
 
-//returns 1 if book is available, 0 if not available
+/*
+ * Checks if passed book is available to be checked out by a student
+ */
 int book_available(book *bk){
     if(bk->count >= 1)
         return 1;
     return 0;
 }
-//0 checked out, 1 added to waitlist
+/*
+ * If book is available, decrements the number of available copies. If book is
+ * not available, student is added to the wait list.
+ */
 int checkout_book(student *stud, book *bk){
     if(book_available(bk)) {
         bk->count--;
@@ -588,6 +561,11 @@ int checkout_book(student *stud, book *bk){
     return 1;
 }
 
+/*
+ * If book does not have a waitlist, increments the number of available copies.
+ * If book has a waitlist, sends an email to the next student and removes them
+ * from wait list.
+ */
 void return_book(book *bk){
     student *next;
     char message[MAX_MESSAGE_SIZE] = "Um livro esta pronto para voce retirar!\nTitulo:";
@@ -602,16 +580,24 @@ void return_book(book *bk){
     }
 }
 
-int isEmailEmpty(email_stack *emls){
-    if(emls->top == NULL)
-        return 1;
+/* Copies elements of array2 into array1. Array1 and Array2 must have size
+ * elements.
+ */
+void copy_int_array(int *array1, int *array2, int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        array1[i] = array2[i];
+    }
+}
+
+/* Compares the elements of array 1 with array 2. Returns 0 if they are the same,
+ * 1 if they are different.
+ */
+int compare_int_array(int *array1, int *array2, int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        if (array1[i] != array2[i])
+            return 1;
+    }
     return 0;
-}
-
-char* get_book_title(book *bk){
-    return bk->title;
-}
-
-char* get_stud_name(student *stud){
-    return stud->name;
 }

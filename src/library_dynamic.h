@@ -9,9 +9,6 @@
  */
 
 
-#ifndef SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H
-#define SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -42,6 +39,7 @@ typedef struct _wait_list_entry{
     struct _wait_list_entry *next;
 } wait_list_entry;
 
+
 /** @struct wait_list
  *  @brief Queue to store all students that are on the wait list for a book
  *  @var wait_list::first
@@ -55,14 +53,28 @@ typedef struct {
 } wait_list;
 
 
+/** @struct email
+ *  @brief Email node to store the email message for a student
+ *  @var char[]::message
+ *  @var email*::next
+ *  Member 'message' message of the email
+ *  Member 'last' pointer to the next email in the stack
+ */
 typedef struct _email{
     char message[MAX_MESSAGE_SIZE] ;
     struct _email *next;
 }email;
 
+
+/** @struct email_stack
+ *  @brief Stack to store all emails for a student
+ *  @var email*::top
+ *  Member 'top' pointer to the first email in the stack
+ */
 typedef struct{
     email *top;
 }email_stack;
+
 
 /** @struct student
  *  @brief Stores all of the information related to a student
@@ -103,9 +115,6 @@ typedef struct {
 } student_list;
 
 
-typedef struct _book book;
-
-
 /** @struct book
  *  @brief Stores all of the information related to a book
  *  @var student::title
@@ -125,7 +134,7 @@ typedef struct _book book;
  *  Member 'edition' int that stores the edition of book
  *  Member 'next' pointer to the next book in the book list
  */
-struct _book {
+typedef struct _book {
     char title[MAX_TITLE_SIZE];
     char author[MAX_AUTHOR_SIZE];
     char editor[MAX_EDITOR_SIZE];
@@ -135,7 +144,7 @@ struct _book {
     int count; // 0 if none currently available (i.e. all books are checked out)
     struct _book *next;
     wait_list wl;
-};
+} book;
 
 
 /** @struct book
@@ -238,6 +247,16 @@ int remove_student_name(book_list *books, student_list *studs, char name[MAX_NAM
 int remove_student_nusp(book_list *books, student_list *studs, int nusp[MAX_NUSP_SIZE]);
 
 
+/** @brief Returns the name of passed student
+ *
+ * Gets the name of the passed student and returns it as a string.
+ *
+ * @param stud *stud student to get name
+ * @return string of student's name
+ */
+char* get_stud_name(student *stud);
+
+
 /** @brief Creates a new book list
  *
  * Initializes a book_list so that the other functions for the list can be
@@ -252,7 +271,9 @@ void create_book_list(book_list *books);
  *
  * Allocates memory for a new book. Saves the passed title, author, editor,
  * isbn, year, and edition to the new book. Adds the new book to the end of
- * existing book list.
+ * existing book list. If the ISBN is duplicated, a new record will not be
+ * added to the list. Instead the count of books of the original will be
+ * incremented.
  *
  * @param book_list* books book list where book will be added
  * @param char[] title title of the book to be added
@@ -324,6 +345,217 @@ int remove_book_title(book_list *books, char title[MAX_TITLE_SIZE]);
 int remove_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE]);
 
 
+/** @brief Creates a wait list queue setting it to the correct initial position
+ *
+ * Initializes the wait list to it's initial position, with first and last
+ * pointing to NULL.
+ *
+ * @param wait_list* wl wait list to be created
+ */
+void create_wait_list(wait_list *wl);
+
+
+/** @brief Clears the wait list queue
+ *
+ * Clears the wait list and returns it to it's initial position, with first and
+ * last pointing to NULL. Frees the memory of all nodes that were part of the
+ * wait list.
+ *
+ * @param wait_list* wl wait list to be removed
+ */
+void remove_wait_list(wait_list *wl);
+
+
+/** @brief Adds student to waitlist
+ *
+ * Adds the passed student as the last element in the passed wait list.
+ *
+ * @param student* stud pointer to student who will be added to wait list
+ * @param wait_list* wl pointer to wait list student will be added to
+ * @return 1 if it was not possible to add student, 0 if student added
+ */
+int add_to_waitlist(student *stud, wait_list *wl);
+
+
+/** @brief Removes student from waitlist
+ *
+ * Removes the first student from the waitlist and saves a pointer to the
+ * student in the passed value.
+ *
+ * @param student* stud pointer to student who was removed from wait list
+ * @param wait_list* wl pointer to wait list student will be removed from
+ * @return 1 if it was not possible to remove student, 0 if student removed
+ */
+int remove_from_waitlist(student *stud, wait_list *wl);
+
+
+/** @brief Removes the student from all wait lists
+ *
+ * Checks the waitlist for each book and removes the student from any wait list
+ * they belong to
+ *
+ * @param book_list *bks list of all registered books
+ * @param student *stud student to be removed
+ */
+void remove_student_all_waitlists(book_list *bks, student *stud);
+
+
+/** @brief Creates an email stack setting it to the correct initial position
+ *
+ * Initializes the email stack to it's initial position, with top pointing to
+ * NULL.
+ *
+ * @param email_stack* emls email stack to be created
+ */
+void create_email_stack(email_stack *emls);
+
+
+/** @brief Adds email to email stack
+ *
+ * Creates a new node in the email stack and saves the passed message to the
+ * new node.
+ *
+ * @param email stack* emls pointer to the email stack where message will be
+ * added
+ * @param char[] email message message to be added in the stack
+ * @return 1 if it was not possible to add email, 0 if email added
+ */
+int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
+
+
+/** @brief Removes top email from stack
+ *
+ * Removes the top message. Saves message of removed email to the passed
+ * parameter.
+ *
+ * @param email stack* emls pointer to the email stack where message will be
+ * removed
+ * @param char[] email message message that was removed from stack
+ * @return 1 if it was not possible to remove email, 0 if email removed
+ */
+int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
+
+
+/** @brief Clears the email stack
+ *
+ * Clears the email stack and returns it to it's initial position, with top
+ * pointing to NULL. Frees the memory of all nodes that were part of the
+ * email stack.
+ *
+ * @param wait_list* wl wait list to be removed
+ */
+void delete_email_stack(email_stack *emls);
+
+
+/** @brief Checks if email stack is empty
+ *
+ * Verifies if the email stick is empty
+ *
+ * @param email_stack *emls email stack to be checked
+ * @return 1 if empty, 0 if not empty
+ */
+int isEmailEmpty(email_stack *emls);
+
+
+/** @brief Searches for student and saves student to passed parameter if found
+ *
+ * Searches for the student in the student list by name and saves the student
+ * to the passed student parameter if found.
+ *
+ * @param student_list *studs list of all registered students
+ * @param char[] name name of student to search for
+ * @param student **stud pointer to where the pointer to the found student will
+ * be stored
+ * @return 0 if student is found, 1 if not found
+ */
+int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud);
+
+
+/** @brief Searches for student and saves student to passed parameter if found
+ *
+ * Searches for the student by nusp in the student list and saves the student
+ * to the passed student parameter if found.
+ *
+ * @param student_list *studs list of all registered students
+ * @param int[] nusp nusp of student to search for
+ * @param student **stud pointer to where the pointer to the found student will
+ * be stored
+ * @return 0 if student is found, 1 if not found
+ */
+int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud);
+
+
+/** @brief Searches for book and saves book to passed parameter if found
+ *
+ * Searches for the book in the book list by title and saves the book
+ * to the passed book parameter if found.
+ *
+ * @param book_list *bks list of all registered books
+ * @param char[] title title of book to search for
+ * @param book **bk pointer to where the pointer to the found book will
+ * be stored
+ * @return 0 if student is found, 1 if not found
+ */
+int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk);
+
+
+/** @brief Searches for book and saves book to passed parameter if found
+ *
+ * Searches for the book in the book list by isbn and saves the book
+ * to the passed book parameter if found.
+ *
+ * @param book_list *bks list of all registered books
+ * @param int[] isbn title of book to search for
+ * @param book **bk pointer to where the pointer to the found book will
+ * be stored
+ * @return 0 if student is found, 1 if not found
+ */
+int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk);
+
+
+/** @brief Returns the title of passed book
+ *
+ * Gets the title of the passed book and returns it as a string.
+ *
+ * @param book *bk book to get title
+ * @return string of book's title
+ */
+char* get_book_title(book *bk);
+
+
+/** @brief Checks if a book is currently available
+ *
+ * Checks if passed book is available to be checked out by a student
+ *
+ * @param book *bk book to be checked
+ * @return 1 if available, 0 if not available
+ */
+int book_available(book *bk);
+
+
+/** @brief Completes necessary actions to check out a book
+ *
+ * If book is available, decrements the number of available copies. If book is
+ * not available, student is added to the wait list.
+ *
+ * @param student *stud student who is checking out book
+ * @param book *bk book to be checked out
+ * @return 1 if added to waitlist, 0 if book was available
+ */
+int checkout_book(student *stud, book *bk);
+
+
+/** @brief Completes necessary actions to return a book
+ *
+ * If book does not have a waitlist, increments the number of available copies.
+ * If book has a waitlist, sends an email to the next student and removes them
+ * from wait list.
+ *
+ * @param book *bk book that was returned
+ */
+void return_book(book *bk);
+
+
 /** @brief Copies elements of an int array to a second int array
  *
  * Copies elements from array2 to array 1. Both arrays must have size
@@ -347,51 +579,3 @@ void copy_int_array(int *array1, int *array2, int size);
  * @return 0 if the arrays are the same, 1 if they are different
  */
 int compare_int_array(int *array1, int *array2, int size);
-
-
-
-void create_wait_list(wait_list *wl);
-
-void remove_wait_list(wait_list *wl);
-
-int add_to_waitlist(student *stud, wait_list *wl);
-
-int remove_from_waitlist(student *stud, wait_list *wl);
-
-void create_email_stack(email_stack *emls);
-
-int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
-
-int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
-
-void delete_email_stack(email_stack *emls);
-
-int isEmailEmpty(email_stack *emls);
-
-int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud);
-
-int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud);
-
-int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk);
-
-int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk);
-
-void remove_student_all_waitlists(book_list *bks, student *stud);
-
-//int add_to_stud_wtlist(stud *stud, stud_bklist *bl);
-
-//int remove_from_stud_wtlist(book *bk, stud_bklist *bl);
-
-//returns 1 if book is available, 0 if not available
-int book_available(book *bk);
-
-int checkout_book(student *stud, book *bk);
-
-void return_book(book *bk);
-
-char * get_book_title(book *bk);
-
-char* get_stud_name(student *stud);
-
-
-#endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H
