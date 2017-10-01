@@ -12,7 +12,7 @@
  * Prompts the user to input the desired action and returns selection as int.
  */
 int get_selection() {
-    printf("\nQual acao voce gostaria de fazer?: ");
+    printf("\nAcao (1-8): ");
     //convert from char into the int that it represents
     int input = getchar() - 48;
     flush_std_in();
@@ -79,6 +79,7 @@ int get_remove_type_book(){
     }
     return input;
 }
+
 /*
  * Prompt user to enter name. Save the name to passed array.
  */
@@ -108,7 +109,6 @@ void get_nusp(int nusp[MAX_NUSP_SIZE]){
         nusp[i] = -1;
         i++;
     }
-    //flush_std_in();
 }
 
 /*
@@ -129,7 +129,6 @@ void get_phone(int phone[MAX_PHONE_SIZE]){
         phone[i] = -1;
         i++;
     }
-    //flush_std_in();
 }
 
 /*
@@ -138,7 +137,6 @@ void get_phone(int phone[MAX_PHONE_SIZE]){
 void get_email(char email[MAX_EMAIL_SIZE]){
     printf("Email: ");
     fgets(email, MAX_EMAIL_SIZE, stdin);
-    //flush_std_in();
 }
 
 /*
@@ -147,7 +145,6 @@ void get_email(char email[MAX_EMAIL_SIZE]){
 void get_title(char title[MAX_TITLE_SIZE]){
     printf("\nTitulo: ");
     fgets(title, MAX_TITLE_SIZE, stdin);
-    //flush_std_in();
 }
 
 /*
@@ -156,7 +153,6 @@ void get_title(char title[MAX_TITLE_SIZE]){
 void get_author(char author[MAX_AUTHOR_SIZE]){
     printf("Autor: ");
     fgets(author, MAX_AUTHOR_SIZE, stdin);
-    //flush_std_in();
 }
 
 /*
@@ -165,7 +161,6 @@ void get_author(char author[MAX_AUTHOR_SIZE]){
 void get_editor(char editor[MAX_EDITOR_SIZE]){
     printf("Editora: ");
     fgets(editor, MAX_EDITOR_SIZE, stdin);
-    //flush_std_in();
 }
 
 /*
@@ -189,14 +184,14 @@ void get_isbn(int isbn[MAX_ISBN_SIZE]){
 }
 
 /*
- * Prompt user to enter year. Save the title to passed int.
+ * Prompt user to enter year. Save the year to passed int.
  */
 void get_year(int *year){
     printf("Year: ");
     while(scanf("%d", year)==0){
         printf("Invalido! Tenta de novo: ");
     }
-    //flush_std_in();
+    flush_std_in();
 }
 
 /*
@@ -208,8 +203,13 @@ void get_edition(int *edition) {
     while (scanf("%d", edition) == 0) {
         printf("Invalido! Tenta de novo: ");
     }
+    flush_std_in();
 }
 
+/*
+ * Prompt user to enter if they want to search for the student by name or by
+ * nusp. Return user's selection.
+ */
 int get_search_type_student(){
     printf("\nBuscar Aluno: ");
     printf("\n1 - Buscar por Nome");
@@ -228,6 +228,10 @@ int get_search_type_student(){
     return input;
 }
 
+/*
+ * Prompt user to enter if they want to search for the student by name or by
+ * nusp. Return user's selection.
+ */
 int get_search_type_book(){
     printf("\nBuscar Livro: ");
     printf("\n1 - Buscar por titulo");
@@ -245,3 +249,4 @@ int get_search_type_book(){
     }
     return input;
 }
+

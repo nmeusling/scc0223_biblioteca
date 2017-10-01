@@ -16,43 +16,44 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_NAME_SIZE 100
-#define MAX_NUSP_SIZE 15
-#define MAX_PHONE_SIZE 15
-#define MAX_EMAIL_SIZE 100
+
 
 #define MAX_TITLE_SIZE 100
 #define MAX_AUTHOR_SIZE 100
 #define MAX_EDITOR_SIZE 100
 #define MAX_ISBN_SIZE 20
 
+#define MAX_NAME_SIZE 100
+#define MAX_NUSP_SIZE 15
+#define MAX_PHONE_SIZE 15
+#define MAX_EMAIL_SIZE 100
 #define MAX_MESSAGE_SIZE 500
 
-typedef struct _book book;
+typedef struct _student student;
 
-/** @struct stud_bklist_entry
- *  @brief Node for list of books checked out by student
- *  @var book::bk pointer to the book on student's list
- *  @var stud_bklist_entry::next
+/** @struct wait_list_entry
+ *  @brief Node for wait list
+ *  @var student::stud pointer to the student on wait list
+ *  @var wait_list_entry::next
  *  Member 'next' pointer to the next student on wait list
  */
-typedef struct _stud_bklist_entry{
-    book *bk;
-    struct _stud_bklist_entry *next;
-} stud_bklist_entry;
+typedef struct _wait_list_entry{
+    student *stud;
+    struct _wait_list_entry *next;
+} wait_list_entry;
 
-typedef struct _stud_bklist stud_bklist;
-
-/** @struct stud_bklist
- *  @brief List to store all books a student has checked out
- *  @var stud_bklist::first
- *  @var stud_bklist::last
- *  Member 'first' pointer to the first book entry of list
- *  Member 'last' pointer to the last book entry of list
+/** @struct wait_list
+ *  @brief Queue to store all students that are on the wait list for a book
+ *  @var wait_list::first
+ *  @var wait_list::last
+ *  Member 'first' pointer to the first student node of wait list
+ *  Member 'last' pointer to the last student node of wait list
  */
-struct _stud_bklist{
-    stud_bklist_entry *first, *last;
-};
+typedef struct {
+    wait_list_entry *first, *last;
+    int total;
+} wait_list;
+
 
 typedef struct _email{
     char message[MAX_MESSAGE_SIZE] ;
@@ -76,16 +77,18 @@ typedef struct{
  *  Member 'email' string that stores student's email
  *  Member 'next' pointer to the next student in the student list
  */
-typedef struct _student {
+struct _student {
     char name[MAX_NAME_SIZE];
     int nusp[MAX_NUSP_SIZE];
     int phone[MAX_PHONE_SIZE];
     char email[MAX_EMAIL_SIZE];
     struct _student *next;
     email_stack emails;
-    stud_bklist bks;
+    //stud_bklist bks;
+    //wait_list *bks[MAX_WAITLISTS_PER_STUD];
+   // int num_wait_lists;
 
-} student;
+};
 
 
 /** @struct student_list
@@ -99,27 +102,9 @@ typedef struct {
     student *first, *last;
 } student_list;
 
-/** @struct wait_list_entry
- *  @brief Node for wait list
- *  @var student::stud pointer to the student on wait list
- *  @var wait_list_entry::next
- *  Member 'next' pointer to the next student on wait list
- */
-typedef struct _wait_list_entry{
-    student *stud;
-    struct _wait_list_entry *next;
-} wait_list_entry;
 
-/** @struct wait_list
- *  @brief Queue to store all students that are on the wait list for a book
- *  @var wait_list::first
- *  @var wait_list::last
- *  Member 'first' pointer to the first student node of wait list
- *  Member 'last' pointer to the last student node of wait list
- */
-typedef struct {
-    wait_list_entry *first, *last;
-} wait_list;
+typedef struct _book book;
+
 
 /** @struct book
  *  @brief Stores all of the information related to a book
@@ -236,7 +221,7 @@ int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
  * be NULL if student is not in list or student is first element in list
  * @return 0 if student removed successfully, 1 otherwise
  */
-int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
+int remove_student_name(book_list *books, student_list *studs, char name[MAX_NAME_SIZE]);
 
 
 /** @brief Removes student with nusp from the list
@@ -250,7 +235,7 @@ int remove_student_name(student_list *studs, char name[MAX_NAME_SIZE]);
  * be NULL if student is not in list or student is first element in list
  * @return 0 if student removed successfully, 1 otherwise
  */
-int remove_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE]);
+int remove_student_nusp(book_list *books, student_list *studs, int nusp[MAX_NUSP_SIZE]);
 
 
 /** @brief Creates a new book list
@@ -381,6 +366,8 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
 
 void delete_email_stack(email_stack *emls);
 
+int isEmailEmpty(email_stack *emls);
+
 int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud);
 
 int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud);
@@ -389,14 +376,22 @@ int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk);
 
 int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk);
 
-void create_stud_bklist(stud_bklist *bl);
+void remove_student_all_waitlists(book_list *bks, student *stud);
 
-void remove_stud_bklist(stud_bklist *bl);
+//int add_to_stud_wtlist(stud *stud, stud_bklist *bl);
 
-int add_to_stud_bklist(book *bk, stud_bklist *bl);
+//int remove_from_stud_wtlist(book *bk, stud_bklist *bl);
 
-int remove_from_stud_bklist(book *bk, stud_bklist *bl);
+//returns 1 if book is available, 0 if not available
+int book_available(book *bk);
 
+int checkout_book(student *stud, book *bk);
+
+void return_book(book *bk);
+
+char * get_book_title(book *bk);
+
+char* get_stud_name(student *stud);
 
 
 #endif //SCC0223_BIBLIOTECA_LIBRARY_DYNAMIC_H
