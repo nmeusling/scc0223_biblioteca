@@ -1,5 +1,5 @@
-/** @file library_dynamic.h
- *  @brief Header file for library_dynamic.c
+/** @file library_static.h
+ *  @brief Header file for library_static.c
  *
  *  This file contains the declaration for the library structs, including the
  *  student list, book list, and wait list. It also contains the prototypes for
@@ -13,8 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
 #define MAX_TITLE_SIZE 100
 #define MAX_AUTHOR_SIZE 100
 #define MAX_EDITOR_SIZE 100
@@ -26,93 +24,104 @@
 #define MAX_EMAIL_SIZE 100
 #define MAX_MESSAGE_SIZE 500
 
+#define WAIT_LIST_SIZE 1000
+#define MAX_EMAILS_PER_STUDENT 10
+#define MAX_STUDENTS 100
+#define MAX_BOOKS 1000
+
 typedef struct _student student;
 
 /** @struct wait_list_entry
  *  @brief Node for wait list
- *  @var student::stud pointer to the student on wait list
- *  @var wait_list_entry::next
+ *  @var student::stud
+ *  @var int::next
+ *  Member 'next' index of next student on wait list
  *  Member 'stud' pointer to the student on wait list
- *  Member 'next' pointer to the next student on wait list
  */
 typedef struct _wait_list_entry{
     student *stud;
-    struct _wait_list_entry *next;
+    int next;
 } wait_list_entry;
 
 
 /** @struct wait_list
- *  @brief Queue to store all students that are on the wait list for a book
- *  @var wait_list::first
- *  @var wait_list::last
- *  Member 'first' pointer to the first student node of wait list
- *  Member 'last' pointer to the last student node of wait list
+ *  @brief Memory bank to store all students that are on the wait list for a book
+ *  @var int::first_empty
+ *  @var wait_list::items
+ *  Member 'first_empty' index of the first empty space in memory bank
+ *  Member 'items' array to store all of the wait lists for all books
  */
 typedef struct {
-    wait_list_entry *first, *last;
-    int total;
+    int first_empty;
+    wait_list_entry items[WAIT_LIST_SIZE];
 } wait_list;
 
 
 /** @struct email
  *  @brief Email node to store the email message for a student
  *  @var char[]::message
- *  @var email*::next
  *  Member 'message' message of the email
- *  Member 'last' pointer to the next email in the stack
  */
 typedef struct _email{
     char message[MAX_MESSAGE_SIZE] ;
-    struct _email *next;
 }email;
 
 
 /** @struct email_stack
  *  @brief Stack to store all emails for a student
- *  @var email*::top
- *  Member 'top' pointer to the first email in the stack
+ *  @var int::top
+ *  @var email::emails
+ *  Member 'top' index of the first email in the stack
+ *  Member 'emails' array to store the email stack
  */
 typedef struct{
-    email *top;
+    int top;
+    email emails [MAX_EMAILS_PER_STUDENT];
 }email_stack;
 
 
 /** @struct student
  *  @brief Stores all of the information related to a student
- *  @var student::name
- *  @var student::nusp
- *  @var student::phone
- *  @var student::email
- *  @var student::next
+ *  @var char[]::name
+ *  @var int[]::nusp
+ *  @var int[]::phone
+ *  @var char[]::email
+ *  @var int::next
+ *  @var email_stack::emails
+ *  @var int::waitlist_beg
+ *  @var int::waitlist_end
  *  Member 'name' string that stores name of student
  *  Member 'nusp' stores the numero USP of student
  *  Member 'phone' stores the student's phone number
  *  Member 'email' string that stores student's email
- *  Member 'next' pointer to the next student in the student list
+ *  Member 'next' index of the next student in the student list
+ *  Member 'emails' stack of all of the students' emails
+ *  Member 'waitlist_first' index of the first student on waitlist
+ *  Member 'waitlist_last' index of the last student on waitlist
  */
 struct _student {
     char name[MAX_NAME_SIZE];
     int nusp[MAX_NUSP_SIZE];
     int phone[MAX_PHONE_SIZE];
     char email[MAX_EMAIL_SIZE];
-    struct _student *next;
+    int next;
     email_stack emails;
-    //stud_bklist bks;
-    //wait_list *bks[MAX_WAITLISTS_PER_STUD];
-   // int num_wait_lists;
-
+    int waitlist_first, waitlist_last;
 };
 
 
 /** @struct student_list
  *  @brief List to store student nodes
- *  @var student_list::first
- *  @var student_list::last
- *  Member 'first' pointer to the first student node of list
- *  Member 'last' pointer to the last student node of list
+ *  @var int::first_empty
+ *  @var int::beg
+ *  @var int::end
+ *  Member 'first_empty' index of the first empty space in student memory bank
+ *  Member 'first' index of the first student of list
+ *  Member 'last' index of the last student of list
  */
 typedef struct {
-    student *first, *last;
+    int first_empty, first, last;
+    student students[MAX_STUDENTS];
 } student_list;
 
 
@@ -125,7 +134,7 @@ typedef struct {
  *  @var student::year
  *  @var student::edition
  *  @var student::count
- *  @var student::next
+ *  @var int::next
  *  @var wait_list::
  *  Member 'title' string that stores title of book
  *  Member 'author' string that stores the author of book
@@ -133,7 +142,7 @@ typedef struct {
  *  Member 'isbn' string that stores the ISBN of book
  *  Member 'year' int that stores the year of book
  *  Member 'edition' int that stores the edition of book
- *  Member 'next' pointer to the next book in the book list
+ *  Member 'next' index of the next book in the book list
  */
 typedef struct _book {
     char title[MAX_TITLE_SIZE];
@@ -143,20 +152,22 @@ typedef struct _book {
     int year;
     int edition;
     int count; // 0 if none currently available (i.e. all books are checked out)
-    struct _book *next;
+    int next;
     wait_list wl;
 } book;
 
 
 /** @struct book
  *  @brief List to store book nodes
- *  @var book_list::first
- *  @var book_list::last
- *  Member 'first' pointer to the first book node of list
- *  Member 'last' pointer to the last book node of list
+ *  @var int::first_empty
+ *  @var int::first
+ *  @var int::last
+ *  Member 'first' index of the first empty space in book memory bank
+ *  Member 'first' index of the first book of list
+ *  Member 'last' index of the last book of list
  */
 typedef struct {
-    book *first, *last;
+    int first_empty, first, last;
 } book_list;
 
 
