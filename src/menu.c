@@ -37,30 +37,30 @@ void print_menu() {
  * Gets the user's desired action and completes it. Returns 1 when action is
  * completed. Returns 0 if the desired action is to quit.
  */
-int complete_action(student_list *studs, book_list *books) {
+int complete_action(library *lib) {
     print_menu();
     int selection = get_selection();
     switch (selection) {
         case 1:
-            register_student(studs);
+            register_student(lib);
             break;
         case 2:
-            register_book(books);
+            register_book(lib);
             break;
         case 3:
-            menu_check_out_book(books, studs);
+            menu_check_out_book(lib);
             break;
         case 4:
-            menu_return_book(books);
+            menu_return_book(lib);
             break;
         case 5:
-            remove_book(books);
+            remove_book(lib);
             break;
         case 6:
-            remove_student(books, studs);
+            remove_student(lib);
             break;
         case 7:
-            print_emails(studs);
+            print_emails(lib);
             break;
         default:
             return 0;
@@ -73,7 +73,7 @@ int complete_action(student_list *studs, book_list *books) {
  * student and adds the student to the list of students. Returns 0 if student
  * was registered with success, returns 1 if an error occurred.
  */
-int register_student(student_list *studs) {
+int register_student(library *lib) {
 
     printf("\nPor favor, digite os dados para o aluno novo: ");
     char name[MAX_NAME_SIZE];
@@ -86,7 +86,7 @@ int register_student(student_list *studs) {
     get_phone(phone);
     get_email(email);
 
-    if (insert_student(studs, name, nusp, phone, email) == 1) {
+    if (insert_student(lib, name, nusp, phone, email) == 1) {
         printf("\nNao foi possivel registrar o aluno!");
         return 1;
     }
@@ -98,18 +98,18 @@ int register_student(student_list *studs) {
  * Prompts user to input how they would like to remove a student. Calls the
  * appropriate function to delete the student based on user's selection.
  */
-void remove_student(book_list *books, student_list *studs) {
+void remove_student(library *lib) {
     int type = get_remove_type_student();
 
     switch (type) {
         case 1:
-            if (menu_remove_student_name(books, studs) == 1)
+            if (menu_remove_student_name(lib) == 1)
                 printf("\nNao foi possivel remover o aluno!");
             else
                 printf("\nO aluno foi removido!");
             break;
         case 2:
-            if (menu_remove_student_nusp(books, studs) == 1)
+            if (menu_remove_student_nusp(lib) == 1)
                 printf("\nNao foi possivel remover o aluno!");
             else
                 printf("\nAluno foi removido!");
@@ -123,11 +123,11 @@ void remove_student(book_list *books, student_list *studs) {
  * Prompts user to enter name of student to be deleted. Calls function to remove
  * student. Returns 0 if student is removed, 1 if the deletion was not possible.
  */
-int menu_remove_student_name(book_list *books, student_list *studs) {
+int menu_remove_student_name(library *lib) {
     char name[MAX_NAME_SIZE];
     printf("Digite o nome do aluno que voce quer remover: ");
     get_name(name);
-    if (remove_student_name(books, studs, name) == 1) {
+    if (remove_student_name(lib, name) == 1) {
         return 1;
     }
     return 0;
@@ -137,11 +137,11 @@ int menu_remove_student_name(book_list *books, student_list *studs) {
  * Prompts user to enter nusp of student to be deleted. Calls function to remove
  * student. Returns 0 if student is removed, 0 if the deletion was not possible.
  */
-int menu_remove_student_nusp(book_list *books, student_list *studs) {
+int menu_remove_student_nusp(library *lib) {
     int nusp[MAX_NUSP_SIZE];
     printf("Digite o NUSP do aluno que voce quer remover: ");
     get_nusp(nusp);
-    if (remove_student_nusp(books, studs, nusp) == 1) {
+    if (remove_student_nusp(lib, nusp) == 1) {
         return 1;
     }
     return 0;
@@ -152,7 +152,7 @@ int menu_remove_student_nusp(book_list *books, student_list *studs) {
  * book and adds the book to the list of books. Returns 0 if book
  * was registered with success, returns 0 if an error occurred.
  */
-int register_book(book_list *books) {
+int register_book(library *lib) {
 
     printf("\nPor favor, digite os dados para o livro novo: ");
     char title[MAX_TITLE_SIZE];
@@ -170,7 +170,7 @@ int register_book(book_list *books) {
     get_year(&year);
     get_edition(&edition);
 
-    result = insert_book(books, title, author, editor, isbn, year, edition);
+    result = insert_book(lib, title, author, editor, isbn, year, edition);
     if ( result == 1) {
         printf("\nNao foi possivel registrar o livro!");
         return 1;
@@ -186,18 +186,18 @@ int register_book(book_list *books) {
  * Prompts user how they would like to remove a book. Calls the appropriate
  * function to delete the book based on user's selection.
  */
-void remove_book(book_list *books) {
+void remove_book(library *lib) {
     int type = get_remove_type_book();
 
     switch (type) {
         case 1:
-            if (menu_remove_book_title(books) == 1)
+            if (menu_remove_book_title(lib) == 1)
                 printf("\nNao foi possivel remover o livro!");
             else
                 printf("\nLivro foi removido!");
             break;
         case 2:
-            if (menu_remove_book_isbn(books) == 1)
+            if (menu_remove_book_isbn(lib) == 1)
                 printf("\nNao foi possivel remover o livro!");
             else
                 printf("\nLivro foi removido!");
@@ -211,11 +211,11 @@ void remove_book(book_list *books) {
  * Prompts user to enter name of book to be deleted. Calls function to remove
  * book. Returns 0 if book is removed, 0 if the deletion was not possible.
  */
-int menu_remove_book_title(book_list *books) {
+int menu_remove_book_title(library *lib) {
     char title[MAX_TITLE_SIZE];
     printf("Digite o titulo do livro que voce quer remover: ");
     get_title(title);
-    if (remove_book_title(books, title) == 1) {
+    if (remove_book_title(lib, title) == 1) {
         return 1;
     }
     return 0;
@@ -225,11 +225,11 @@ int menu_remove_book_title(book_list *books) {
  * Prompts user to enter ISBN of book to be deleted. Calls function to remove
  * book. Returns 0 if book is removed, 0 if the deletion was not possible.
  */
-int menu_remove_book_isbn(book_list *books) {
+int menu_remove_book_isbn(library *lib) {
     int isbn[MAX_ISBN_SIZE];
     printf("Digite o ISBN do livro que voce quer remover: ");
     get_isbn(isbn);
-    if (remove_book_isbn(books, isbn) == 1) {
+    if (remove_book_isbn(lib, isbn) == 1) {
         return 1;
     }
     return 0;
@@ -240,7 +240,7 @@ int menu_remove_book_isbn(book_list *books) {
  * that they want to check out. Returns 1 if it was not possible to find the
  * book or the student. Returns 0 if the checkout was successful.
  */
-int menu_check_out_book(book_list *books, student_list *studs) {
+int menu_check_out_book(library *lib) {
     char name[MAX_NAME_SIZE];
     int nusp[MAX_NUSP_SIZE];
     char title[MAX_TITLE_SIZE];
@@ -255,14 +255,14 @@ int menu_check_out_book(book_list *books, student_list *studs) {
     switch (type) {
         case 1:
             get_name(name);
-            if(get_student_by_name(studs, name, &stud) == 1) {
+            if(get_student_by_name(lib, name, &stud) == 1) {
                 printf("\nNao foi possivel achar o aluno!");
                 return 1;
             }
             break;
         case 2:
             get_nusp(nusp);
-            if(get_student_by_nusp(studs, nusp, &stud) == 1){
+            if(get_student_by_nusp(lib, nusp, &stud) == 1){
                 printf("\nNao foi possivel achar o aluno!");
                 return 1;
             }
@@ -275,7 +275,7 @@ int menu_check_out_book(book_list *books, student_list *studs) {
     switch(type){
         case 1:
             get_title(title);
-            if(get_book_by_title(books, title, &book) == 1){
+            if(get_book_by_title(lib, title, &book) == 1){
                 printf("\nNao foi possivel achar o livro!");
                 return 1;
             }
@@ -283,7 +283,7 @@ int menu_check_out_book(book_list *books, student_list *studs) {
             break;
         case 2:
             get_isbn(isbn);
-            if(get_book_by_isbn(books, isbn, &book) == 1){
+            if(get_book_by_isbn(lib, isbn, &book) == 1){
                 printf("\nNao foi possivel achar o livro!");
                 return 1;
             }
@@ -305,7 +305,7 @@ int menu_check_out_book(book_list *books, student_list *studs) {
  * Prompts user to enter the book that has been returned. Returns 1 if it was
  * not possible to find the book. Returns 0 if the return was successful.
  */
-int menu_return_book(book_list *books) {
+int menu_return_book(library *lib) {
     char title[MAX_TITLE_SIZE];
     int isbn[MAX_ISBN_SIZE];
     book *bk;
@@ -315,14 +315,14 @@ int menu_return_book(book_list *books) {
     switch(type){
         case 1:
             get_title(title);
-            if(get_book_by_title(books, title, &bk) == 1){
+            if(get_book_by_title(lib, title, &bk) == 1){
                 printf("\nNao foi possivel achar o livro!");
                 return 1;
             }
             break;
         case 2:
             get_isbn(isbn);
-            if(get_book_by_isbn(books, isbn, &bk) == 1){
+            if(get_book_by_isbn(lib, isbn, &bk) == 1){
                 printf("\nNao foi possivel achar o livro!");
                 return 1;
             }
@@ -341,7 +341,7 @@ int menu_return_book(book_list *books) {
  * Prompts user to enter which student to print the emails for. Prints all
  * of the emails of chosen email.
  */
-int print_emails(student_list *studs){
+int print_emails(library *lib){
     char name[MAX_NAME_SIZE];
     int nusp[MAX_NUSP_SIZE];
     student *stud;
@@ -351,14 +351,14 @@ int print_emails(student_list *studs){
     switch (type) {
         case 1:
             get_name(name);
-            if(get_student_by_name(studs, name, &stud) == 1) {
+            if(get_student_by_name(lib, name, &stud) == 1) {
                 printf("\nNao foi possivel achar o aluno!");
                 return 1;
             }
             break;
         case 2:
             get_nusp(nusp);
-            if(get_student_by_nusp(studs, nusp, &stud) ==1){
+            if(get_student_by_nusp(lib, nusp, &stud) ==1){
                 printf("\nNao foi possivel achar o aluno!");
                 return 1;
             }
