@@ -1,5 +1,5 @@
 /** @file library_dynamic.c
- *  @brief Abstract Data Type for Library Management
+ *  @brief Dynamic Abstract Data Type for Library Management
  *
  *  Contains the operations to manipulate the library data structure. Includes
  *  operations to register a new student, remove a student, register a new book,

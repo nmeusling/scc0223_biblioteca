@@ -35,8 +35,8 @@ typedef struct _student student;
  *  @brief Node for wait list
  *  @var student::stud
  *  @var int::next
- *  Member 'next' index of next student on wait list
  *  Member 'stud' pointer to the student on wait list
+ *  Member 'next' index of next student on wait list
  */
 typedef struct _wait_list_entry{
     student *stud;
@@ -121,7 +121,7 @@ struct _student {
  */
 typedef struct {
     int first_empty, first, last;
-    student students[MAX_STUDENTS];
+    student elements[MAX_STUDENTS];
 } student_list;
 
 
@@ -171,92 +171,135 @@ typedef struct {
 } book_list;
 
 
-/** @brief Creates a new student list
- *
- * Initializes a student_list so that the other functions for the list can be
- * used.
- *
- * @param student_list* studs pointer to student list to be initialized
+/** @struct library
+ *  @brief Contains the book list and student list of the library
+ *  @var book_list::books
+ *  @var student_list::students
+ *  Member 'books' list of all books in the library
+ *  Member 'students' list of all students in the library
  */
-void create_stud_list(student_list *studs);
+typedef struct{
+    book_list books;
+    student_list students;
+} library;
 
 
-/** @brief Creates a new student and adds it to student list
+/** @brief Creates a new library
  *
- * Allocates memory for a new student. Saves the passed name, nusp, phone, and
- * email to the new student. Adds the new student to the end of existing
- * student list.
+ * Initializes a library so that the other functions for related to the
+ * library can be used successfully.
  *
- * @param student_list* studs student list where student will be added
+ * @param library* lib pointer to the library
+ */
+void create_library(library *lib);
+
+
+/** @brief Creates a new student list for library
+ *
+ * Initializes the student_list of passed library so that the other functions
+ * for the student list can be used successfully.
+ *
+ * @param library* lib pointer to the library
+ */
+void create_stud_list(library *lib);
+
+
+/** @brief Get next space in student list
+ *
+ * Find the next available space in the memory bank for the student. Return -1
+ * if there is no more available space.
+ *
+ * @param student_list *studs student list where memory will be searched
+ */
+int get_node_studentlist(student_list *studs);
+
+
+/** @brief Free the specified index of student memory bank
+ *
+ * Free the specified index in the student memory bank.
+ *
+ * @param student_list *studs student list where memory will be freed
+ * @param int index index that will be freed
+ */
+void free_node_studentlist(student_list *studs, int index);
+
+
+/** @brief Creates a new student and adds it to student list of library
+ *
+ * Allocates memory in memory bank for a new student. Saves the passed name,
+ * nusp, phone, and email to the new student. Adds the new student to the end
+ * of existing student list for the passed library.
+ *
+ * @param library* lib pointer to the library
  * @param char[] name name of student to be added
  * @param int[] nusp Numero USP of student to be added
  * @param int[] phone Phone number of student to be added
  * @param char[] email Email of student to be added
  * @return 1 if an error occurred, 0 if student inserted successfully
  */
-int insert_student(student_list *studs, char name[MAX_NAME_SIZE],
+int insert_student(library *lib, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
                    char email[MAX_EMAIL_SIZE]);
 
 
-/** @brief Searches for student with name in the list
+/** @brief Searches for student with name in the student list
  *
- * Searches for a student in the student list whose name is the same as the
- * name passed to the function. Previous student in the list is saved to passed
- * parameter prev_stud.
+ * Searches for a student in the student list of the passed library whose name
+ * is the same as the name passed to the function. Previous student in the list
+ * is saved to passed parameter prev_stud.
  *
- * @param student_list* studs student list where student will be searched
+ * @param library* lib pointer to the library
  * @param char[] name name of student to be searched
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
- * @return 0 if student is found on list, 1 otherwise
+ * @return 0 if student is found on library's student list, 1 otherwise
  */
-int search_student_name(student_list *studs, char name[MAX_NAME_SIZE],
+int search_student_name(library *lib, char name[MAX_NAME_SIZE],
                         student **prev_stud);
 
 
-/** @brief Searches for student with nusp in the list
+/** @brief Searches for student with nusp in the student list
  *
- * Searches for a student in the student list whose nusp is the same as the
- * nusp passed to the function. Previous student in the list is saved to passed
- * parameter prev_stud.
+ * Searches for a student in the student list of the passed library whose nusp
+ * is the same as the nusp passed to the function. Previous student in the list
+ * is saved to passed parameter prev_stud.
  *
- * @param student_list* studs student list where student will be searched
+ * @param library* lib pointer to the library where student will be searched
  * @param int[] nusp nusp of student to be searched
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
  * @return 0 if student is found on list, 1 otherwise
  */
-int search_student_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE],
+int search_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE],
                         student **prev_stud);
 
 
-/** @brief Removes student with name from the list
+/** @brief Removes student with name from the student list
  *
- * Uses search function to find previous student in list and then remove the
- * desired student.
+ * Uses search function to find previous student in library's student list and
+ * then removes the desired student.
  *
- * @param student_list* studs student list where student will be removed
+ * @param library* lib pointer to the library where student will be removed
  * @param char[] name name of student to be removed
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
  * @return 0 if student removed successfully, 1 otherwise
  */
-int remove_student_name(book_list *books, student_list *studs, char name[MAX_NAME_SIZE]);
+int remove_student_name(library *lib, char name[MAX_NAME_SIZE]);
 
 
-/** @brief Removes student with nusp from the list
+/** @brief Removes student with nusp from the student list
  *
- * Uses search function to find previous student in list and then remove the
- * desired student.
+ * Uses search function to find previous student in library's student list and
+ * then removes the desired student.
  *
- * @param student_list* studs student list where student will be removed
+ * @param library* lib pointer to the library where student will be removed
  * @param int[] nusp nusp of student to be removed
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
  * @return 0 if student removed successfully, 1 otherwise
  */
-int remove_student_nusp(book_list *books, student_list *studs, int nusp[MAX_NUSP_SIZE]);
+int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]);
 
 
 /** @brief Returns the name of passed student
@@ -271,23 +314,24 @@ char* get_stud_name(student *stud);
 
 /** @brief Creates a new book list
  *
- * Initializes a book_list so that the other functions for the list can be
- * used.
+ * Initializes a book_list in the library so that the other functions for the
+ * book list can be used.
  *
- * @param book_list* studs pointer to book list to be initialized
+ * @param library* lib pointer to the library where the book list will be
+ * initialized
  */
-void create_book_list(book_list *books);
+void create_book_list(library *lib);
 
 
-/** @brief Creates a new book and adds it to book list
+/** @brief Creates a new book and adds it to library's book list
  *
- * Allocates memory for a new book. Saves the passed title, author, editor,
- * isbn, year, and edition to the new book. Adds the new book to the end of
- * existing book list. If the ISBN is duplicated, a new record will not be
- * added to the list. Instead the count of books of the original will be
- * incremented.
+ * Allocates memory in the memory bank for a new book. Saves the passed title,
+ * author, editor, isbn, year, and edition to the new book. Adds the new book
+ * to the end of existing book list of passed library. If the ISBN is
+ * duplicated, a new record will not be added to the list. Instead the count of
+ * books of the original will be incremented.
  *
- * @param book_list* books book list where book will be added
+ * @param library* lib pointer to the library that contains the book list
  * @param char[] title title of the book to be added
  * @param char[] author author of the book to be added
  * @param char[] editor editor of the book to be added
@@ -296,65 +340,65 @@ void create_book_list(book_list *books);
  * @param int edition edition of the book to be added
  * @return 1 if an error occurred, 0 if student inserted successfully
  */
-int insert_book(book_list *books, char title[MAX_TITLE_SIZE],
+int insert_book(library *lib, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition);
 
 
-/** @brief Searches for book with title in the list
+/** @brief Searches for book with title in the library's book list
  *
- * Searches for a book in the book list whose title is the same as the
+ * Searches for a book in the library's book list whose title is the same as the
  * title passed to the function. Previous book in the list is saved to passed
  * parameter prev_book.
  *
- * @param book_list* books book list where book will be searched
+ * @param library* lib pointer to the library that contains book list
  * @param char[] title title of book to be searched
  * @param book** prev_book pointer to the pointer of the previous book, will
  * be NULL if book is not in list or book is first element in list
  * @return 0 if book is found on list, 1 otherwise
  */
-int search_book_title(book_list *bks, char title[MAX_TITLE_SIZE],
+int search_book_title(library *lib, char title[MAX_TITLE_SIZE],
                       book **prev_book);
 
 
-/** @brief Searches for book with ISBN in the list
+/** @brief Searches for book with ISBN in the library's book list
  *
- * Searches for a book in the book list whose ISBN is the same as the
+ * Searches for a book in the library's book list whose ISBN is the same as the
  * ISBN passed to the function. Previous book in the list is saved to passed
  * parameter prev_book.
  *
- * @param book_list* books book list where book will be searched
+ * @param library* lib pointer to the library
  * @param int[] isbn ISBN of book to be searched
  * @param book** prev_book pointer to the pointer of the previous book, will
  * be NULL if book is not in list or book is first element in list
  * @return 0 if book is found on list, 1 otherwise
  */
-int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
+int search_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE],
                      book **prev_book);
 
 
-/** @brief Removes book with title from the list
+/** @brief Removes book with title from the library's book list
  *
- * Uses search function to find previous book in list and then remove the
- * desired book.
+ * Uses search function to find previous book in library's book list and then
+ * removes the desired book.
  *
- * @param book_list* books book list where book will be removed
+ * @param library* lib pointer to the library
  * @param char[] title title of book to be removed
  * @return 0 if book removed successfully, 1 otherwise
  */
-int remove_book_title(book_list *books, char title[MAX_TITLE_SIZE]);
+int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]);
 
 
-/** @brief Removes book with ISBN from the list
+/** @brief Removes book with ISBN from the library's book list
  *
- * Uses search function to find previous book in list and then remove the
- * desired book.
+ * Uses search function to find previous book in library's book list and then
+ * removes the desired book.
  *
- * @param book_list* books book list where book will be removed
+ * @param library* lib pointer to the library
  * @param int[] isbn ISBN of book to be removed
  * @return 0 if book removed successfully, 1 otherwise
  */
-int remove_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE]);
+int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]);
 
 
 /** @brief Creates a wait list queue setting it to the correct initial position
@@ -471,8 +515,8 @@ int isEmailEmpty(email_stack *emls);
 
 /** @brief Searches for student and saves student to passed parameter if found
  *
- * Searches for the student in the student list by name and saves the student
- * to the passed student parameter if found.
+ * Searches for the student in the library's student list  by name and saves
+ * the student to the passed student parameter if found.
  *
  * @param student_list *studs list of all registered students
  * @param char[] name name of student to search for
@@ -480,49 +524,49 @@ int isEmailEmpty(email_stack *emls);
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_student_by_name(student_list *studs, char name[MAX_NAME_SIZE], student **stud);
+int get_student_by_name(library *lib, char name[MAX_NAME_SIZE], student **stud);
 
 
 /** @brief Searches for student and saves student to passed parameter if found
  *
- * Searches for the student by nusp in the student list and saves the student
- * to the passed student parameter if found.
+ * Searches for the student by nusp in the library's student list and saves
+ * the student to the passed student parameter if found.
  *
- * @param student_list *studs list of all registered students
+ * @param library* lib pointer to the library
  * @param int[] nusp nusp of student to search for
  * @param student **stud pointer to where the pointer to the found student will
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_student_by_nusp(student_list *studs, int nusp[MAX_NUSP_SIZE], student **stud);
+int get_student_by_nusp(library *lib, int nusp[MAX_NUSP_SIZE], student **stud);
 
 
 /** @brief Searches for book and saves book to passed parameter if found
  *
- * Searches for the book in the book list by title and saves the book
+ * Searches for the book in the library's book list by title and saves the book
  * to the passed book parameter if found.
  *
- * @param book_list *bks list of all registered books
+ * @param library* lib pointer to the library
  * @param char[] title title of book to search for
  * @param book **bk pointer to where the pointer to the found book will
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_book_by_title(book_list *bks, char title[MAX_TITLE_SIZE], book **bk);
+int get_book_by_title(library *lib, char title[MAX_TITLE_SIZE], book **bk);
 
 
 /** @brief Searches for book and saves book to passed parameter if found
  *
- * Searches for the book in the book list by isbn and saves the book
+ * Searches for the book in the library's book list by isbn and saves the book
  * to the passed book parameter if found.
  *
- * @param book_list *bks list of all registered books
+ * @param library* lib pointer to the library
  * @param int[] isbn title of book to search for
  * @param book **bk pointer to where the pointer to the found book will
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_book_by_isbn(book_list *bks, int isbn[MAX_ISBN_SIZE], book **bk);
+int get_book_by_isbn(library *lib, int isbn[MAX_ISBN_SIZE], book **bk);
 
 
 /** @brief Returns the title of passed book

@@ -177,7 +177,7 @@ typedef struct{
  * Initializes a library so that the other functions for related to the
  * library can be used successfully.
  *
- * @param student_list* studs pointer to student list to be initialized
+ * @param library* lib pointer to the library
  */
 void create_library(library *lib);
 
@@ -187,7 +187,7 @@ void create_library(library *lib);
  * Initializes the student_list of passed library so that the other functions
  * for the student list can be used successfully.
  *
- * @param student_list* studs pointer to student list to be initialized
+ * @param library* lib pointer to the library
  */
 void create_stud_list(library *lib);
 
@@ -198,7 +198,7 @@ void create_stud_list(library *lib);
  * email to the new student. Adds the new student to the end of existing
  * student list for the passed library.
  *
- * @param student_list* studs student list where student will be added
+ * @param library* lib pointer to the library
  * @param char[] name name of student to be added
  * @param int[] nusp Numero USP of student to be added
  * @param int[] phone Phone number of student to be added
