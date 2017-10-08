@@ -10,7 +10,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "library_dynamic.h"
+#include "dynamic/library_dynamic.h"
+//#include "library_static.h"
 
 /** @brief Prompts user to enter desired action
  *

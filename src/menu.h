@@ -54,7 +54,7 @@ int register_student(library *lib);
  *
  * @param library* lib current library
  */
-void remove_student(library *lib);
+void menu_remove_student(library *lib);
 
 
 /** @brief Reads in name of student and calls function to delete student
