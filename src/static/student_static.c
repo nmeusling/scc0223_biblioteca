@@ -3,7 +3,6 @@
 //
 
 #include "student_static.h"
-#include "book_static.h"
 
 /*
  * Initializes the library's memory bank to store students.

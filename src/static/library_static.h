@@ -54,6 +54,7 @@ int insert_student(library *lib, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
                    char email[MAX_EMAIL_SIZE]);
 
+int remove_student(library *lib, int prev_stud);
 
 
 /** @brief Removes student with name from the student list

@@ -10,14 +10,14 @@
 
 
 #include "library_static.h"
-#include "book_static.h"
+
 
 /*
  * Initializes the library, creating its associated student list and book list
  */
 void create_library(library *lib){
-    create_stud_list(lib);
-    create_book_list(lib);
+    create_stud_list(&lib->students);
+    create_book_list(&lib->books);
 }
 
 
@@ -39,55 +39,51 @@ int insert_student(library *lib, char name[MAX_NAME_SIZE],
 
 }
 
+int remove_student(library *lib, int prev_stud){
+    int index = lib->students.first;
+    if(index == -1)
+        return 1;
+    //student is first in list
+    if(prev_stud == -1)
+        remove_student_all_waitlists(&lib->books, &lib->students.elements[index]);
+    else {
+        index = lib->books.elements[prev_stud].next;
+        remove_student_all_waitlists(&lib->books, &lib->students.elements[index]);
+    }
+    remove_student_studentlist(&lib->students, prev_stud);
+    return 0;
+}
 
-//todo verify logic and try to clean
 /*
  * Uses search function to find previous student in library's student list and
  * then removes the desired student.
  */
 int remove_student_name(library *lib, char name[MAX_NAME_SIZE]){
-    int prev_stud;
-    int index = lib->students.first;
-    //list is empty
-    if (index == -1) {
+    int prev_stud = -1;
+
+    //student not found in list, otherwise index of previous student saved to prev_stud
+    if (search_student_name(&lib->students, name, &prev_stud) == 1) {
         return 1;
     }
-    //student not found in list
-    if (search_student_name(lib, name, &prev_stud) == 1) {
-        return 1;
-    }
-    remove_student_studentlist(&lib->students, prev_stud);
-    //remoce all wait lists!
+    return remove_student(lib, prev_stud);
 }
 
-//todo verify logic and try to clean
 /*
  * Uses search function to find previous student in library's student list and
  * then removes the desired student.
  */
 int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]) {
-    int prev_stud;
-    int index = lib->students.first;
-    //list is empty
-    if (index == -1) {
+    int prev_stud = -1;
+
+    //student not found in list, otherwise previous student saved to prev_stud
+    if (search_student_nusp(&lib->students, nusp, &prev_stud) == 1) {
         return 1;
     }
-    //student not found in list
-    if (search_student_nusp(lib, nusp, &prev_stud) == 1) {
-        return 1;
-    }
-    remove_student_studentlist(&lib->students, prev_stud);
-    //remoce all wait lists!
+    return remove_student(lib, prev_stud);
 }
 
 
 
-
-
-
-
-
-//todo logic for duplicate book, shouldn't allocate memory
 /*
  * Allocates memory in the memory bank for a new book. Saves the passed title,
  * author, editor, isbn, year, and edition to the new book. Adds the new book
@@ -118,166 +114,44 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
 
 
 
-//todo what about when duplicates!!!!
-//todo verify logic and try to clean last element, separate functions
 /*
  * Uses search function to find previous book in library's book list and then
  * removes the desired book.
  */
 int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
-    int prev;
-    int index = lib->books.first;
-    //list is empty
-    if (index == -1) {
-        return 1;
-    }
+    int bk = -1;
+    int prev_book = -1;
+
     //book not found in list
-    if (search_book_title(lib, title, &prev) == 1) {
+    if (get_book_by_title(&lib->books, title, &bk) == 1) {
         return 1;
     }
-    //book is 1st element
-    if (prev == -1) {
-        lib->books.first = lib->books.elements[index].next;
-        remove_wait_list(&(lib->books.elements[index].wl));
-        free_node_booklist(&lib->books, index);
-        //book was only element, list is not empty
-        if (lib->books.first == -1)
-            lib->books.last = -1;
-        return 0;
+    if(lib->books.elements[bk].count > 1){
+        lib->books.elements[bk].count --;
+        return 2;
     }
-    index = lib->books.elements[prev].next;
-    lib->books.elements[prev].next = lib->books.elements[index].next;
-    remove_wait_list(&(lib->books.elements[index].wl));
-    free_node_booklist(&lib->books, index);
-    return 0;
+    return remove_book_booklist(&lib->books, prev_book);
 }
-//todo what about when duplicates!!!!
-//todo verify logic and try to clean last element, separate functions
+
 /*
  * Uses search function to find previous book in library's book list and then
  * removes the desired book.
  */
 int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
-    int prev;
-    int index = lib->books.first;
-    //list is empty
-    if (index == -1) {
-        return 1;
-    }
+    int bk = -1;
+    int prev_book = -1;
+
     //book not found in list
-    if (search_book_isbn(lib, isbn, &prev) == 1) {
+    if (get_book_by_isbn(&lib->books, isbn, &bk) == 1) {
         return 1;
     }
-    //book is 1st element
-    if (prev == -1) {
-        lib->books.first = lib->books.elements[index].next;
-        remove_wait_list(&(lib->books.elements[index].wl));
-        free_node_booklist(&lib->books, index);
-        //book was only element, list is not empty
-        if (lib->books.first == -1)
-            lib->books.last = -1;
-        return 0;
+    if(lib->books.elements[bk].count > 1){
+        lib->books.elements[bk].count --;
+        return 2;
     }
-    index = lib->books.elements[prev].next;
-    lib->books.elements[prev].next = lib->books.elements[index].next;
-    remove_wait_list(&(lib->books.elements[index].wl));
-    free_node_booklist(&lib->books, index);
-    return 0;
+    return remove_book_booklist(&lib->books, prev_book);
 }
 
-
-
-/** @brief Clears the wait list queue
- *
- * Clears the wait list and returns it to it's initial position, with first and
- * last pointing to NULL. Frees the memory of all nodes that were part of the
- * wait list.
- *
- * @param wait_list* wl wait list to be removed
- */
-void remove_wait_list(wait_list *wl);
-
-
-/** @brief Adds student to waitlist
- *
- * Adds the passed student as the last element in the passed wait list.
- *
- * @param student* stud pointer to student who will be added to wait list
- * @param wait_list* wl pointer to wait list student will be added to
- * @return 1 if it was not possible to add student, 0 if student added
- */
-int add_to_waitlist(student *stud, wait_list *wl);
-
-
-/** @brief Removes student from waitlist
- *
- * Removes the first student from the waitlist and saves a pointer to the
- * student in the passed value.
- *
- * @param student* stud pointer to student who was removed from wait list
- * @param wait_list* wl pointer to wait list student will be removed from
- * @return 1 if it was not possible to remove student, 0 if student removed
- */
-int remove_from_waitlist(student *stud, wait_list *wl);
-
-
-/** @brief Removes the student from all wait lists
- *
- * Checks the waitlist for each book and removes the student from any wait list
- * they belong to
- *
- * @param book_list *bks list of all registered books
- * @param student *stud student to be removed
- */
-void remove_student_all_waitlists(book_list *bks, student *stud);
-
-
-/** @brief Searches for book and saves book to passed parameter if found
- *
- * Searches for the book in the library's book list by title and saves the book
- * to the passed book parameter if found.
- *
- * @param library* lib pointer to the library
- * @param char[] title title of book to search for
- * @param book **bk pointer to where the pointer to the found book will
- * be stored
- * @return 0 if student is found, 1 if not found
- */
-int get_book_by_title(library *lib, char title[MAX_TITLE_SIZE], book **bk);
-
-
-/** @brief Searches for book and saves book to passed parameter if found
- *
- * Searches for the book in the library's book list by isbn and saves the book
- * to the passed book parameter if found.
- *
- * @param library* lib pointer to the library
- * @param int[] isbn title of book to search for
- * @param book **bk pointer to where the pointer to the found book will
- * be stored
- * @return 0 if student is found, 1 if not found
- */
-int get_book_by_isbn(library *lib, int isbn[MAX_ISBN_SIZE], book **bk);
-
-
-/** @brief Returns the title of passed book
- *
- * Gets the title of the passed book and returns it as a string.
- *
- * @param book *bk book to get title
- * @return string of book's title
- */
-char* get_book_title(book *bk);
-
-
-/** @brief Checks if a book is currently available
- *
- * Checks if passed book is available to be checked out by a student
- *
- * @param book *bk book to be checked
- * @return 1 if available, 0 if not available
- */
-int book_available(book *bk);
 
 
 /** @brief Completes necessary actions to check out a book
@@ -289,7 +163,14 @@ int book_available(book *bk);
  * @param book *bk book to be checked out
  * @return 1 if added to waitlist, 0 if book was available
  */
-int checkout_book(student *stud, book *bk);
+int checkout_book(student *stud, book *bk){
+    if(book_available(bk)) {
+        bk->count--;
+        return 0;
+    }
+    add_to_waitlist(stud, bk);
+    return 1;
+}
 
 
 /** @brief Completes necessary actions to return a book
@@ -300,6 +181,18 @@ int checkout_book(student *stud, book *bk);
  *
  * @param book *bk book that was returned
  */
-void return_book(book *bk);
+void return_book(book *bk){
+    student *next;
+    char message[MAX_MESSAGE_SIZE] = "Um livro esta pronto para voce retirar!\nTitulo:";
+    if(bk->waitlist_first == -1){
+        bk->count ++;
+    }
+    else{
+        strcat(message, bk->title);
+        next = bk->wl.items[bk->waitlist_first].stud;
+        push_email(&next->emails, message);
+        remove_from_waitlist(next, bk);
+    }
+}
 
 

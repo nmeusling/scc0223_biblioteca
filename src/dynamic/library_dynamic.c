@@ -30,6 +30,48 @@ int insert_student(library *lib, char name[MAX_NAME_SIZE],
     return 0;
 }
 
+int remove_student(library *lib, student *prev_stud){
+    if(lib->students.first == NULL)
+        return 1;
+    if(prev_stud == NULL)
+        remove_student_all_waitlists(&lib->books, lib->students.first);
+    else
+        remove_student_all_waitlists(&lib->books, prev_stud->next);
+
+    remove_student_studentlist(&lib->students, prev_stud);
+    return 0;
+}
+
+
+
+/*
+ * Removes student with name from library's student list. Returns 0 if student
+ * is removed successfully. Returns 1 if it is not possible to remove the student
+ */
+int remove_student_name(library *lib, char name[MAX_NAME_SIZE]) {
+    student *prev_stud = NULL;
+
+    //student not found in list, otherwise previous student saved to prev_stud
+    if (search_student_name(&lib->students, name, &prev_stud) == 1) {
+        return 1;
+    }
+    return remove_student(lib, prev_stud);
+}
+
+/*
+ * Removes student with nusp from library's student list. Returns 0 if student
+ * is removed successfully. Returns 1 if it is not possible to remove the student
+ */
+int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]) {
+    student *prev_stud = NULL;
+
+    //student not found in list, otherwise previous student saved to prev_stud
+    if (search_student_nusp(&lib->students, nusp, &prev_stud) == 1) {
+        return 1;
+    }
+    return remove_student(lib, prev_stud);
+}
+
 /*
  * Allocates memory for a new book. Saves the passed title, author, editor,
  * isbn, year, and edition to the new book. Adds the new book to the end of
@@ -100,47 +142,7 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]) {
 }
 
 
-int remove_student(library *lib, student *prev_stud){
-    if(lib->students.first == NULL)
-        return 1;
-    if(prev_stud == NULL)
-        remove_student_all_waitlists(&lib->books, lib->students.first);
-    else
-        remove_student_all_waitlists(&lib->books, prev_stud->next);
 
-    remove_student_studentlist(&lib->students, prev_stud);
-    return 0;
-}
-
-
-
-/*
- * Removes student with name from library's student list. Returns 0 if student
- * is removed successfully. Returns 1 if it is not possible to remove the student
- */
-int remove_student_name(library *lib, char name[MAX_NAME_SIZE]) {
-    student *prev_stud = NULL;
-
-    //student not found in list, otherwise previous student saved to prev_stud
-    if (search_student_name(&lib->students, name, &prev_stud) == 1) {
-        return 1;
-    }
-    return remove_student(lib, prev_stud);
-}
-
-/*
- * Removes student with nusp from library's student list. Returns 0 if student
- * is removed successfully. Returns 1 if it is not possible to remove the student
- */
-int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]) {
-    student *prev_stud = NULL;
-
-    //student not found in list, otherwise previous student saved to prev_stud
-    if (search_student_nusp(&lib->students, nusp, &prev_stud) == 1) {
-        return 1;
-    }
-    return remove_student(lib, prev_stud);
-}
 
 
 

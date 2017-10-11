@@ -222,7 +222,7 @@ int menu_remove_book_title(library *lib) {
     char title[MAX_TITLE_SIZE];
     printf("Digite o titulo do livro que voce quer remover: ");
     get_title(title);
-    return remove_book_isbn(lib, title);
+    return remove_book_title(lib, title);
 }
 
 /*

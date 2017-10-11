@@ -34,7 +34,24 @@ typedef struct{
  */
 void create_library(library *lib);
 
+/** @brief Creates a new student and adds it to student list of library
+ *
+ * Allocates memory for a new student. Saves the passed name, nusp, phone, and
+ * email to the new student. Adds the new student to the end of existing
+ * student list for the passed library.
+ *
+ * @param library* lib pointer to the library
+ * @param char[] name name of student to be added
+ * @param int[] nusp Numero USP of student to be added
+ * @param int[] phone Phone number of student to be added
+ * @param char[] email Email of student to be added
+ * @return 1 if an error occurred, 0 if student inserted successfully
+ */
+int insert_student(library *lib, char name[MAX_NAME_SIZE],
+                   int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
+                   char email[MAX_EMAIL_SIZE]);
 
+int remove_student(library *lib, student *prev_stud);
 
 /** @brief Removes student with name from the student list
  *
@@ -67,29 +84,9 @@ int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]);
 
 
 
-/** @brief Completes necessary actions to check out a book
- *
- * If book is available, decrements the number of available copies. If book is
- * not available, student is added to the wait list.
- *
- * @param student *stud student who is checking out book
- * @param book *bk book to be checked out
- * @return 1 if added to waitlist, 0 if book was available
- */
-int checkout_book(student *stud, book *bk);
-
-
-/** @brief Completes necessary actions to return a book
- *
- * If book does not have a waitlist, increments the number of available copies.
- * If book has a waitlist, sends an email to the next student and removes them
- * from wait list.
- *
- * @param book *bk book that was returned
- */
-void return_book(book *bk);
-
-
+int insert_book(library *lib, char title[MAX_TITLE_SIZE],
+                char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
+                int isbn[MAX_ISBN_SIZE], int year, int edition);
 
 
 /** @brief Removes book with title from the library's book list
@@ -116,25 +113,32 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]);
 int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]);
 
 
-int insert_book(library *lib, char title[MAX_TITLE_SIZE],
-                char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
-                int isbn[MAX_ISBN_SIZE], int year, int edition);
 
-/** @brief Creates a new student and adds it to student list of library
+
+/** @brief Completes necessary actions to check out a book
  *
- * Allocates memory for a new student. Saves the passed name, nusp, phone, and
- * email to the new student. Adds the new student to the end of existing
- * student list for the passed library.
+ * If book is available, decrements the number of available copies. If book is
+ * not available, student is added to the wait list.
  *
- * @param library* lib pointer to the library
- * @param char[] name name of student to be added
- * @param int[] nusp Numero USP of student to be added
- * @param int[] phone Phone number of student to be added
- * @param char[] email Email of student to be added
- * @return 1 if an error occurred, 0 if student inserted successfully
+ * @param student *stud student who is checking out book
+ * @param book *bk book to be checked out
+ * @return 1 if added to waitlist, 0 if book was available
  */
-int insert_student(library *lib, char name[MAX_NAME_SIZE],
-                   int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
-                   char email[MAX_EMAIL_SIZE]);
+int checkout_book(student *stud, book *bk);
 
-int remove_student(library *lib, student *prev_stud);
+
+/** @brief Completes necessary actions to return a book
+ *
+ * If book does not have a waitlist, increments the number of available copies.
+ * If book has a waitlist, sends an email to the next student and removes them
+ * from wait list.
+ *
+ * @param book *bk book that was returned
+ */
+void return_book(book *bk);
+
+
+
+
+
+
