@@ -230,7 +230,10 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], int *i
     return 0;
 }
 
-
+/*
+ * Searches for the student in the library's student list by nusp and saves the
+ * student's index to the passed int parameter if found.
+ */
 int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], int *index){
     int prev;
     //student not found

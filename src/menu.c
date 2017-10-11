@@ -188,17 +188,23 @@ int register_book(library *lib) {
  */
 void remove_book(library *lib) {
     int type = get_remove_type_book();
-
+    int result;
     switch (type) {
         case 1:
-            if (menu_remove_book_title(lib) == 1)
+            result = menu_remove_book_title(lib);
+            if (result == 1)
                 printf("\nNao foi possivel remover o livro!");
+            else if(result == 2)
+                printf("\nUma das copias do livro foi removido!");
             else
                 printf("\nLivro foi removido!");
             break;
         case 2:
-            if (menu_remove_book_isbn(lib) == 1)
+            result = menu_remove_book_isbn(lib);
+            if (result == 1)
                 printf("\nNao foi possivel remover o livro!");
+            else if(result == 2)
+                printf("\nUma das copias do livro foi removido!");
             else
                 printf("\nLivro foi removido!");
             break;
@@ -209,30 +215,26 @@ void remove_book(library *lib) {
 
 /*
  * Prompts user to enter name of book to be deleted. Calls function to remove
- * book. Returns 0 if book is removed, 0 if the deletion was not possible.
+ * book. Returns 0 if book is removed, 1 if the deletion was not possible, 2 if
+ * the book was a duplicate and count was decreased by 1.
  */
 int menu_remove_book_title(library *lib) {
     char title[MAX_TITLE_SIZE];
     printf("Digite o titulo do livro que voce quer remover: ");
     get_title(title);
-    if (remove_book_title(lib, title) == 1) {
-        return 1;
-    }
-    return 0;
+    return remove_book_isbn(lib, title);
 }
 
 /*
  * Prompts user to enter ISBN of book to be deleted. Calls function to remove
- * book. Returns 0 if book is removed, 0 if the deletion was not possible.
+ * book. Returns 0 if book is removed, 1 if the deletion was not possible, 2 if
+ * the book was a duplicate and count was decreased by 1.
  */
 int menu_remove_book_isbn(library *lib) {
     int isbn[MAX_ISBN_SIZE];
     printf("Digite o ISBN do livro que voce quer remover: ");
     get_isbn(isbn);
-    if (remove_book_isbn(lib, isbn) == 1) {
-        return 1;
-    }
-    return 0;
+    return remove_book_isbn(lib, isbn);
 }
 
 /*

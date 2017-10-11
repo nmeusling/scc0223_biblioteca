@@ -60,29 +60,40 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
 /*
  * Removes book with title from library's book list. Returns 0 if book is
  * removed successfully. Returns 1 if it is not possible to remove the book, if
- * 1 is returned either list is empty or the book is not on the list.
+ * 1 is returned either list is empty or the book is not on the list. Returns 2
+ * if a duplicate is removed and count is decreased by 1.
  */
 int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]) {
+    book *bk = NULL;
     book *prev_book = NULL;
 
     //book not found in list
-    if (search_book_title(&lib->books, title, &prev_book) == 1) {
+    if (get_book_by_title(&lib->books, title, &bk) == 1) {
         return 1;
     }
-
+    if(bk->count > 1){
+        bk->count --;
+        return 2;
+    }
     return remove_book_booklist(&lib->books, prev_book);
 }
 
 /*
  * Removes book with ISBN from library's book list. Returns 0 if book is
- * removed successfully. Returns 1 if it is not possible to remove the book
+ * removed successfully. Returns 1 if it is not possible to remove the book.
+ * Returns 2 if a duplicate is removed and count is decreased by 1.
  */
 int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]) {
+    book *bk = NULL;
     book *prev_book = NULL;
 
     //book not found in list
-    if (search_book_isbn(&lib->books, isbn, &prev_book) == 1) {
+    if (get_book_by_isbn(&lib->books, isbn, &bk) == 1) {
         return 1;
+    }
+    if(bk->count > 1){
+        bk->count --;
+        return 2;
     }
 
     return remove_book_booklist(&lib->books, prev_book);
