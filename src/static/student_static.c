@@ -79,7 +79,7 @@ void insert_student_to_list(student_list *students, int index){
 
 }
 
-//todo can simplify logic?
+
 /*
  * Searches for a student in the student list of the passed library whose name
  * is the same as the name passed to the function. Previous student in the list
@@ -88,25 +88,27 @@ void insert_student_to_list(student_list *students, int index){
 int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
                         int *prev_stud){
     int index = students->first;
+    int next;
     if(index == -1)
         return 1;
+    next = students->elements[index].next;
     //If the student is the first in the list
     if (strcmp(students->elements[index].name, name) == 0) {
         *prev_stud = -1;
         return 0;
     }
-    while (students->elements[index].next != -1) {
-        if (strcmp(students->elements[students->elements[index].next].name, name) == 0) {
+    while (next != -1) {
+        if (strcmp(students->elements[next].name, name) == 0) {
             *prev_stud = index;
             return 0;
         }
-        index = students->elements[index].next;
+        index = next;
+        next = students->elements[next].next;
 
     }
     return 1;
 }
 
-//todo can simplify logic?
 /*
  * Searches for a student in the student list of the passed library whose nusp
  * is the same as the nusp passed to the function. Previous student in the list
@@ -115,19 +117,22 @@ int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
 int search_student_nusp(student_list *students, int nusp[MAX_NUSP_SIZE],
                         int *prev_stud){
     int index = students->first;
+    int next;
     if(index == -1)
         return 1;
+    next = students->elements[index].next;
     //If the student is the first in the list
     if (compare_int_array(students->elements[index].nusp, nusp, MAX_NUSP_SIZE) == 0) {
         *prev_stud = -1;
         return 0;
     }
-    while (students->elements[index].next != -1) {
-        if (compare_int_array(students->elements[students->elements[index].next].nusp, nusp, MAX_NUSP_SIZE) == 0) {
+    while (next != -1) {
+        if (compare_int_array(students->elements[next].nusp, nusp, MAX_NUSP_SIZE) == 0) {
             *prev_stud =index;
             return 0;
         }
-        index = students->elements[index].next;
+        index = next;
+        next = students->elements[next].next;
 
     }
     return 1;

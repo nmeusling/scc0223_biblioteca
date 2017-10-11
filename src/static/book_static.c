@@ -105,19 +105,23 @@ void insert_book_booklist(book_list *books, int index){
 int search_book_title(book_list *books, char title[MAX_TITLE_SIZE],
                       int *prev_book){
     int index = books->first;
+    int next;
     if(index == -1)
         return 1;
+    next = books->elements[index].next;
     //If the student is the first in the list
     if (strcmp(books->elements[index].title, title) == 0) {
         *prev_book = -1;
         return 0;
     }
-    while (books->elements[index].next != -1) {
-        if (strcmp(books->elements[index].title, title) == 0) {
+    while (next!= -1) {
+
+        if (strcmp(books->elements[next].title, title) == 0) {
             *prev_book = index;
             return 0;
         }
-        index = books->elements[index].next;
+        index = next;
+        next = books->elements[next].next;
 
     }
     return 1;
@@ -132,19 +136,22 @@ int search_book_title(book_list *books, char title[MAX_TITLE_SIZE],
 int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
                      int *prev_book){
     int index = books->first;
+    int next;
     if(index == -1)
         return 1;
+    next = books->elements[index].next;
     //If the student is the first in the list
     if (compare_int_array(books->elements[index].isbn, isbn, MAX_ISBN_SIZE) == 0) {
         *prev_book = -1;
         return 0;
     }
-    while (books->elements[index].next != -1) {
-        if (compare_int_array(books->elements[index].isbn, isbn, MAX_ISBN_SIZE) == 0) {
+    while (next != -1) {
+        if (compare_int_array(books->elements[next].isbn, isbn, MAX_ISBN_SIZE) == 0) {
             *prev_book = index;
             return 0;
         }
-        index = books->elements[index].next;
+        index = next;
+        next = books->elements[next].next;
 
     }
     return 1;
