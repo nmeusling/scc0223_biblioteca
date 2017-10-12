@@ -241,7 +241,7 @@ int add_to_waitlist(student *stud, wait_list *wl);
  * @param wait_list* wl pointer to wait list student will be removed from
  * @return 1 if it was not possible to remove student, 0 if student removed
  */
-int remove_from_waitlist(student *stud, wait_list *wl);
+int remove_from_waitlist(wait_list *wl, student **stud);
 
 
 

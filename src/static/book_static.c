@@ -239,7 +239,7 @@ void create_wait_list(wait_list *wl){
 void remove_wait_list(book *bk, book_list *bks){
     student * temp = NULL;
 
-    while(remove_from_waitlist(temp, bk, bks) == 0);
+    while(remove_from_waitlist(bk, bks, &temp) == 0);
 
 }
 
@@ -261,37 +261,36 @@ int add_to_waitlist(student *stud, book *bk, book_list *books){
     return 0;
 }
 
-int remove_from_waitlist(student *stud, book *bk, book_list *books){
+int remove_from_waitlist(book *bk, book_list *books, student **stud ){
     int first = bk->waitlist_first;
     //waitlist is empty
     if(first == -1)
         return 1;
 
-    //save student that will be removed
-    *stud = *books->wl.items[first].stud;
     //if student is only one on waitlist
-    if(books->wl.items[first].next == -1){
+
+    int index = bk->waitlist_first;
+    *stud = books->wl.items[index].stud;
+    if(books->wl.items[index].next == -1){
         bk->waitlist_first = -1;
         bk->waitlist_last = -1;
     }
     else {
-        int next = books->wl.items[first].next;
-        bk->waitlist_first = next;
+        bk->waitlist_first = books->wl.items[index].next;
     }
-    free_node_waitlist(&books->wl, first);
+    free_node_waitlist(&books->wl, index);
     bk->waitlist_total --;
     return 0;
 }
 
 void remove_student_all_waitlists(book_list *bks, student *stud){
     int book_index = bks->first;
-
-    student *temp = NULL;
+    student *temp;
     int i;
     //for all books
     while(book_index != -1){
         for(i = 0; i<bks->elements[book_index].waitlist_total;i++){
-            remove_from_waitlist(temp, &(bks->elements[book_index]), bks);
+            remove_from_waitlist(&(bks->elements[book_index]), bks, &temp);
             if(temp != stud){
                 add_to_waitlist(temp, &(bks->elements[book_index]), bks);
             }

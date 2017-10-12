@@ -380,13 +380,14 @@ int print_emails(library *lib){
             return 0;
     }
     email_stack temp;
+    create_email_stack(&temp);
     char message[MAX_MESSAGE_SIZE];
     while(!isEmailEmpty(&stud->emails)){
         pop_email(&stud->emails, message);
         printf("\n%s", message);
         push_email(&temp, message);
     }
-    while(!isEmailEmpty(&stud->emails)){
+    while(!isEmailEmpty(&temp)){
         pop_email(&temp, message);
         push_email(&stud->emails, message);
     }

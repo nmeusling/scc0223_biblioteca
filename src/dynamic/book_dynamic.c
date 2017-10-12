@@ -188,8 +188,8 @@ void create_wait_list(wait_list *wl){
  * Removes the wait list, freeing the memory used for the nodes.
  */
 void remove_wait_list(wait_list *wl){
-    student * temp = NULL;
-    while(remove_from_waitlist(temp, wl) == 0);
+    student *temp;
+    while(remove_from_waitlist(wl, &temp) == 0);
 }
 
 /*
@@ -217,13 +217,12 @@ int add_to_waitlist(student *stud, wait_list *wl){
  * Removes the first student from the waitlist. Returns 1 if an error occurs, 0
  * if student is removed successfully. Saves student removed to stud.
  */
-int remove_from_waitlist(student *stud, wait_list *wl){
+int remove_from_waitlist(wait_list *wl, student **stud){
     if(wl->first == NULL)
         return 1;
 
-    //possible error on this line
-    *stud = *wl->first->stud;
     wait_list_entry *temp = wl->first;
+    *stud = temp->stud;
     if(wl->first->next == NULL){
         wl->first = NULL;
         wl->last = NULL;
@@ -248,7 +247,7 @@ void remove_student_all_waitlists(book_list *bks, student *stud){
     //for all books
     while(pointer != NULL){
         for(i = 0; i<pointer->wl.total;i++){
-            remove_from_waitlist(temp, &pointer->wl);
+            remove_from_waitlist(&pointer->wl, &temp);
             if(temp != stud){
                 add_to_waitlist(temp, &pointer->wl);
             }

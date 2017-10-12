@@ -110,10 +110,17 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]) {
     book *prev_book = NULL;
 
     //book not found in list
-    if (get_book_by_title(&lib->books, title, &bk) == 1) {
+    if(search_book_title(&lib->books, title, &prev_book) == 1){
+    //if (get_book_by_title(&lib->books, title, &bk) == 1) {
         return 1;
     }
-    if(bk->count > 1){
+    if(prev_book == NULL){
+        bk = lib->books.first;
+    }
+    else {
+        bk = prev_book->next;
+    }
+    if(bk->count >= 1){
         bk->count --;
         return 2;
     }
@@ -130,10 +137,16 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]) {
     book *prev_book = NULL;
 
     //book not found in list
-    if (get_book_by_isbn(&lib->books, isbn, &bk) == 1) {
+    if(search_book_isbn(&lib->books, isbn, &prev_book) == 1) {
         return 1;
     }
-    if(bk->count > 1){
+    if(prev_book == NULL){
+        bk = lib->books.first;
+    }
+    else {
+        bk = prev_book->next;
+    }
+    if(bk->count >= 1){
         bk->count --;
         return 2;
     }
@@ -174,7 +187,7 @@ void return_book(library *lib, book *bk){
         strcat(message, bk->title);
         next = bk->wl.first->stud;
         push_email(&next->emails, message);
-        remove_from_waitlist(next, &bk->wl);
+        remove_from_waitlist(&bk->wl, &next);
     }
 }
 

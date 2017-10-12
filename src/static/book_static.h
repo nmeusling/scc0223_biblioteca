@@ -227,7 +227,7 @@ int add_to_waitlist(student *stud, book *bk, book_list *books);
  * @param wait_list* wl pointer to wait list student will be removed from
  * @return 1 if it was not possible to remove student, 0 if student removed
  */
-int remove_from_waitlist(student *stud, book *bk, book_list *books);
+int remove_from_waitlist(book *bk, book_list *books, student **stud );
 
 
 /** @brief Removes the student from all wait lists
