@@ -252,7 +252,7 @@ int menu_check_out_book(library *lib) {
     int isbn[MAX_ISBN_SIZE];
     student *stud;
     book *book;
-
+    int result;
     printf("\nPor favor, selecione o aluno que vai retirar o livro.");
 
     int type = get_search_type_student();
@@ -298,13 +298,20 @@ int menu_check_out_book(library *lib) {
     }
     if(book == NULL || stud == NULL)
         return 1;
-    if(checkout_book(lib, stud, book) == 0) {
+    result = checkout_book(lib, stud, book);
+    if( result == 0) {
         printf("\nO livro foi retirado pelo aluno.");
         printf("\nLivro: %s", get_book_title(book));
         printf("Aluno: %s", get_stud_name(stud));
     }
-    else {
+    else if (result == 1){
         printf("\nO aluno foi adicionado a lista de espera para o livro. ");
+        printf("\nLivro: %s", get_book_title(book));
+        printf("Aluno: %s", get_stud_name(stud));
+    }
+    else
+    {
+        printf("\nO aluno ja esta na lista de espera para o livro!");
         printf("\nLivro: %s", get_book_title(book));
         printf("Aluno: %s", get_stud_name(stud));
     }

@@ -179,12 +179,15 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
  *
  * @param student *stud student who is checking out book
  * @param book *bk book to be checked out
- * @return 1 if added to waitlist, 0 if book was available
+ * @return 2 student already on waitlist, 1 if added to waitlist, 0 if book was available
  */
 int checkout_book(library *lib, student *stud, book *bk){
     if(book_available(bk)) {
         bk->count--;
         return 0;
+    }
+    if(is_on_waitlist(bk, &lib->books, stud)){
+        return 2;
     }
     add_to_waitlist(stud, bk, &lib->books);
     return 1;

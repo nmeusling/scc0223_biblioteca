@@ -230,6 +230,8 @@ int add_to_waitlist(student *stud, book *bk, book_list *books);
  */
 int remove_from_waitlist(book *bk, book_list *books, student **stud );
 
+int is_on_waitlist(book *bk, book_list *books, student *stud);
+
 
 /** @brief Removes the student from all wait lists
  *

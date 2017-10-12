@@ -283,6 +283,20 @@ int remove_from_waitlist(book *bk, book_list *books, student **stud ){
     bk->waitlist_total --;
     return 0;
 }
+//1 if stud is on waitlist, 0 if no
+int is_on_waitlist(book *bk, book_list *books, student *stud){
+    student *temp;
+    int i;
+    int result = 0;
+    for(i = 0; i<bk->waitlist_total; i++){
+        remove_from_waitlist(bk, books, &temp);
+        if(stud == temp){
+            result = 1;
+        }
+        add_to_waitlist(temp, bk, books);
+    }
+    return result;
+}
 
 void remove_student_all_waitlists(book_list *bks, student *stud){
     int book_index = bks->first;

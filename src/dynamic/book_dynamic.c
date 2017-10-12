@@ -237,6 +237,20 @@ int remove_from_waitlist(wait_list *wl, student **stud){
 
 }
 
+int is_on_waitlist(book *bk, wait_list *wl, student *stud){
+    student *temp;
+    int i;
+    int result = 0;
+    for(i = 0; i<wl->total; i++){
+        remove_from_waitlist(wl, &temp);
+        if(stud == temp){
+            result = 1;
+        }
+        add_to_waitlist(temp, wl);
+    }
+    return result;
+}
+
 /*
  * Checks the waitlist for each book and removes the student from any wait list
  * they belong to

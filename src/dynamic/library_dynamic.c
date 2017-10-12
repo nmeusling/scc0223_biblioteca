@@ -174,6 +174,9 @@ int checkout_book(library *lib, student *stud, book *bk){
         bk->count--;
         return 0;
     }
+    if(is_on_waitlist(bk, &bk->wl, stud)){
+        return 2;
+    }
     add_to_waitlist(stud, &bk->wl);
     return 1;
 }
