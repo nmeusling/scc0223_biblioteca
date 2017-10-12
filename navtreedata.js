@@ -1,6 +1,6 @@
 var NAVTREE =
 [
-  [ "Biblioteca", "index.html", [
+  [ "Sistema de Controle de Biblioteca", "index.html", [
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
       [ "Data Structure Index", "classes.html", null ],
@@ -24,7 +24,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"menu_8h.html#ad9782b533ca9ab37f349767d520a20ed"
+"struct__book.html#a14acb694fabf43f5fb76f95473d27b04"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
