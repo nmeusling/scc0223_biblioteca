@@ -1,0 +1,24 @@
+digraph "src/menu.c"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="src/menu.c",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="menu.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$menu_8h.html",tooltip="Header file for menu.c. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="input.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$input_8h.html",tooltip="Header file for input.c. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="stdio.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="string.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="static/library_static.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$library__static_8h.html",tooltip="Header file for library_static.c. "];
+  Node6 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="book_static.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$book__static_8h.html"];
+  Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="student_static.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$student__static_8h.html"];
+  Node8 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="stdlib.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node8 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

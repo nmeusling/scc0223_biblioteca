@@ -1,0 +1,11 @@
+digraph "email_stack"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="email_stack",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" top" ,fontname="Helvetica"];
+  Node2 [label="email",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structemail.html",tooltip="Email node to store the email message for a student. "];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" emails" ,fontname="Helvetica"];
+  Node3 [label="_email",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct__email.html"];
+  Node3 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" next" ,fontname="Helvetica"];
+}

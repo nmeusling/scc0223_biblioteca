@@ -1,0 +1,36 @@
+digraph "library"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="library",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" books" ,fontname="Helvetica"];
+  Node2 [label="book_list",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbook__list.html"];
+  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" elements" ,fontname="Helvetica"];
+  Node3 [label="_book",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct__book.html"];
+  Node3 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" next" ,fontname="Helvetica"];
+  Node4 -> Node3 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" wl" ,fontname="Helvetica"];
+  Node4 [label="wait_list",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwait__list.html",tooltip="Queue to store all students that are on the wait list for a book. "];
+  Node5 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" last\nfirst" ,fontname="Helvetica"];
+  Node5 [label="wait_list_entry",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structwait__list__entry.html",tooltip="Node for wait list. "];
+  Node6 -> Node4 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" items" ,fontname="Helvetica"];
+  Node6 [label="_wait_list_entry",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct__wait__list__entry.html"];
+  Node7 -> Node6 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" stud" ,fontname="Helvetica"];
+  Node7 [label="student",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structstudent.html",tooltip="Stores all of the information related to a student. "];
+  Node6 -> Node6 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" next" ,fontname="Helvetica"];
+  Node4 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" wl" ,fontname="Helvetica"];
+  Node8 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" last\nfirst" ,fontname="Helvetica"];
+  Node8 [label="book",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structbook.html",tooltip="Stores all of the information related to a book. "];
+  Node9 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" students" ,fontname="Helvetica"];
+  Node9 [label="student_list",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structstudent__list.html",tooltip="List to store student nodes. "];
+  Node7 -> Node9 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" last\nfirst" ,fontname="Helvetica"];
+  Node10 -> Node9 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" elements" ,fontname="Helvetica"];
+  Node10 [label="_student",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct__student.html"];
+  Node10 -> Node10 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" next" ,fontname="Helvetica"];
+  Node11 -> Node10 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" emails" ,fontname="Helvetica"];
+  Node11 [label="email_stack",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structemail__stack.html",tooltip="Stack to store all emails for a student. "];
+  Node12 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" top" ,fontname="Helvetica"];
+  Node12 [label="email",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structemail.html",tooltip="Email node to store the email message for a student. "];
+  Node13 -> Node11 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" emails" ,fontname="Helvetica"];
+  Node13 [label="_email",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct__email.html"];
+  Node13 -> Node13 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" next" ,fontname="Helvetica"];
+}
