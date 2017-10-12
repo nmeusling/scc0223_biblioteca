@@ -1,6 +1,12 @@
-//
-// Created by nmeusling on 10/8/17.
-//
+/** @file student_dynamic.c
+ *  @brief Functions related to student and student list
+ *
+ *  Dynamic version:
+ *  This file contains all of the functions related to the student and student
+ *  list, including the functions for manipulating the email stack.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 
 #include "book_dynamic.h"
 
@@ -12,6 +18,11 @@ void create_book_list(book_list *books) {
     books->last = NULL;
 }
 
+
+/*
+ * Allocates memory for a new book and saves the passed fields to the book's
+ * details. Saves address of created book to passed bk.
+ */
 int create_book(book **bk, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition){
@@ -32,6 +43,10 @@ int create_book(book **bk, char title[MAX_TITLE_SIZE],
 
 }
 
+
+/*
+ * Adds book to the end of the book list.
+ */
 void insert_book_booklist(book_list *books, book *bk){
     bk->next = NULL;
 
@@ -45,11 +60,10 @@ void insert_book_booklist(book_list *books, book *bk){
 }
 
 
-
 /*
- * Searches for a book in the library's book list with passed title, if found,
- * pointer to the previous book in list is saved in prev_book and 0 is returned.
- * If it is not possible to find book, prev_book will be Null and 1 is returned.
+ * Searches for a book in the book list whose title is the same as the
+ * title passed to the function. Previous book in the list is saved to passed
+ * parameter prev_book.
  */
 int search_book_title(book_list *books, char title[MAX_TITLE_SIZE],
                       book **prev_book) {
@@ -72,10 +86,11 @@ int search_book_title(book_list *books, char title[MAX_TITLE_SIZE],
     return 1;
 }
 
+
 /*
- * Searches for a book in the library's book list with passed ISBN, if found,
- * pointer to the previous book in list is saved in prev_book and 0 is returned.
- * If it is not possible to find book, prev_book will be Null and 1 is returned.
+ * Searches for a book in the book list whose ISBN is the same as the
+ * ISBN passed to the function. Previous book in the list is saved to passed
+ * parameter prev_book.
  */
 int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
                      book **prev_book) {
@@ -99,6 +114,11 @@ int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
 }
 
 
+/*
+ * The next book after the passed book is removed from the list and the
+ * memory that was allocated to the book is freed. Return 0 if book removed, 0
+ * otherwise.
+ */
 int remove_book_booklist(book_list *books, book *prev_book){
     book *bk = books->first;
     //list is empty
@@ -129,8 +149,9 @@ int remove_book_booklist(book_list *books, book *prev_book){
 
 
 /*
- * Searches for the book in the library's book list by title and saves the book
- * to the passed book parameter if found.
+ * Searches for the book in the book list by title and saves the book
+ * to the passed book parameter if found. Return 0 if book is found, 1 if not
+ * found
  */
 int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk){
     book *prev ;
@@ -145,7 +166,8 @@ int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk){
 
 /*
  * Searches for the book in the library's book list by isbn and saves the book
- * to the passed book parameter if found.
+ * to the passed book parameter if found. Return 0 if book is found, 1 if not
+ * found
  */
 int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], book **bk){
     book *prev ;
@@ -158,6 +180,7 @@ int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], book **bk){
     return 0;
 }
 
+
 /*
  * Gets the title of the passed book and returns it as a string.
  */
@@ -165,8 +188,10 @@ char* get_book_title(book *bk){
     return bk->title;
 }
 
+
 /*
- * Checks if passed book is available to be checked out by a student
+ * Checks if passed book is available to be checked out by a student. Return 1
+ * if available, 0 if not available
  */
 int book_available(book *bk){
     if(bk->count >= 1)
@@ -237,7 +262,12 @@ int remove_from_waitlist(wait_list *wl, student **stud){
 
 }
 
-int is_on_waitlist(book *bk, wait_list *wl, student *stud){
+
+/*
+ * Checks if student is already on passed waitlist. Returns 1 if student is on
+ * wait list, 0 if not
+ */
+int is_on_waitlist(wait_list *wl, student *stud){
     student *temp;
     int i;
     int result = 0;
@@ -250,6 +280,7 @@ int is_on_waitlist(book *bk, wait_list *wl, student *stud){
     }
     return result;
 }
+
 
 /*
  * Checks the waitlist for each book and removes the student from any wait list

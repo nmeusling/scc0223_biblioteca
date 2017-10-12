@@ -24,9 +24,8 @@ void create_library(library *lib){
 
 
 /*
- * Allocates memory in memory bank for a new student. Saves the passed name,
- * nusp, phone, and email to the new student. Adds the new student to the end
- * of existing student list for the passed library.
+ * Calls the necessary functions to create a new student with the passed
+ * information and then add the student to the library's student list.
  */
 int insert_student(library *lib, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
@@ -40,6 +39,10 @@ int insert_student(library *lib, char name[MAX_NAME_SIZE],
 
 }
 
+/*
+ * Calls the necessary functions to remove the student from the student list.
+ * The student is also removed from any wait lists that they are currently on.
+ */
 int remove_student(library *lib, int prev_stud){
     int index = lib->students.first;
     if(index == -1)
@@ -86,11 +89,10 @@ int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]) {
 
 
 /*
- * Allocates memory in the memory bank for a new book. Saves the passed title,
- * author, editor, isbn, year, and edition to the new book. Adds the new book
- * to the end of existing book list of passed library. If the ISBN is
- * duplicated, a new record will not be added to the list. Instead the count of
- * books of the original will be incremented.
+ * Verifies if a book with the same ISBN number already exists. If so, the book
+ * count and total are incremented. Otherwise, calls the functions to create a
+ * new book and then adds the book to the end of existing book list of passed
+ * library.
  */
 int insert_book(library *lib, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
@@ -119,8 +121,9 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
 
 
 /*
- * Uses search function to find previous book in library's book list and then
- * removes the desired book.
+ * Verifies if the total number of copies of the book the is more than 1. If so,
+ * total is decremented. Otherwise, calls the function to remove the book from
+ * the book list and then deletes the book.
  */
 int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
     int bk = -1;
@@ -136,7 +139,7 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
     else {
         bk = lib->books.elements[prev_book].next;
     }
-    if(lib->books.elements[bk].total >= 1){
+    if(lib->books.elements[bk].total > 1){
         lib->books.elements[bk].count --;
         lib->books.elements[bk].total --;
         return 2;
@@ -145,8 +148,9 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
 }
 
 /*
- * Uses search function to find previous book in library's book list and then
- * removes the desired book.
+ * Verifies if the total number of copies of the book the is more than 1. If so,
+ * total is decremented. Otherwise, calls the function to remove the book from
+ * the book list and then deletes the book.
  */
 int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
     int bk = -1;
@@ -162,7 +166,7 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
     else {
         bk = lib->books.elements[prev_book].next;
     }
-    if(lib->books.elements[bk].total >= 1){
+    if(lib->books.elements[bk].total > 1){
         lib->books.elements[bk].count --;
         lib->books.elements[bk].total --;
         return 2;
@@ -172,14 +176,10 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
 
 
 
-/** @brief Completes necessary actions to check out a book
- *
+/*
  * If book is available, decrements the number of available copies. If book is
- * not available, student is added to the wait list.
- *
- * @param student *stud student who is checking out book
- * @param book *bk book to be checked out
- * @return 2 student already on waitlist, 1 if added to waitlist, 0 if book was available
+ * not available, student is added to the wait list. If student is already on
+ * waitlist, they will not be added again.
  */
 int checkout_book(library *lib, student *stud, book *bk){
     if(book_available(bk)) {
@@ -189,19 +189,18 @@ int checkout_book(library *lib, student *stud, book *bk){
     if(is_on_waitlist(bk, &lib->books, stud)){
         return 2;
     }
-    add_to_waitlist(stud, bk, &lib->books);
-    return 1;
+    if(add_to_waitlist(stud, bk, &lib->books) == 0)
+        return 1;
+    //not possible to add student to waitlist
+    return 3;
 }
 
 
-/** @brief Completes necessary actions to return a book
- *
+/*
  * If book does not have a waitlist, increments the number of available copies.
  * If book has a waitlist, sends an email to the next student and removes them
  * from wait list. Returns 1 if no student on waitlist, 0 if next student was
  * notified.
- *
- * @param book *bk book that was returned
  */
 int return_book(library *lib, book *bk){
     student *next;

@@ -67,6 +67,11 @@ void create_book_list(book_list *books){
     books->last = -1;
 }
 
+
+/*
+ * Allocates memory for a new book and saves the passed fields to the book's
+ * details. Returns index of new book.
+ */
 int create_book(book_list *books, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition){
@@ -88,6 +93,10 @@ int create_book(book_list *books, char title[MAX_TITLE_SIZE],
     return index;
 }
 
+
+/*
+ * Adds book to the end of the book list.
+ */
 void insert_book_booklist(book_list *books, int index){
     books->elements[index].next = -1;
 
@@ -100,8 +109,9 @@ void insert_book_booklist(book_list *books, int index){
     books->last = index;
 }
 
+
 /*
- * Searches for a book in the library's book list whose title is the same as the
+ * Searches for a book in the book list whose title is the same as the
  * title passed to the function. Previous book in the list is saved to passed
  * parameter prev_book.
  */
@@ -132,7 +142,7 @@ int search_book_title(book_list *books, char title[MAX_TITLE_SIZE],
 
 
 /*
- * Searches for a book in the library's book list whose ISBN is the same as the
+ * Searches for a book in the book list whose ISBN is the same as the
  * ISBN passed to the function. Previous book in the list is saved to passed
  * parameter prev_book.
  */
@@ -160,6 +170,12 @@ int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
     return 1;
 }
 
+
+/*
+ * The next book after the passed book is removed from the list and the
+ * memory that was allocated to the book is freed. Return 0 if book removed, 0
+ * otherwise.
+ */
 int remove_book_booklist(book_list *books, int prev_book){
     int index = books->first;
     //list is empty
@@ -188,6 +204,12 @@ int remove_book_booklist(book_list *books, int prev_book){
     return 0;
 }
 
+
+/*
+ * Searches for the book in the book list by title and saves the book
+ * to the passed book parameter if found. Return 0 if book is found, 1 if not
+ * found
+ */
 int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk){
     int prev, next;
     if(search_book_title(books, title, &prev) == 1)
@@ -201,6 +223,12 @@ int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk){
     return 0;
 }
 
+
+/*
+ * Searches for the book in the library's book list by isbn and saves the book
+ * to the passed book parameter if found. Return 0 if book is found, 1 if not
+ * found
+ */
 int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], book **bk){
     int prev, next;
     if(search_book_isbn(books, isbn, &prev) == 1)
@@ -214,10 +242,19 @@ int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], book **bk){
     return 0;
 }
 
+
+/*
+ * Gets the title of the passed book and returns it as a string.
+ */
 char* get_book_title(book *bk){
     return bk->title;
 }
 
+
+/*
+ * Checks if passed book is available to be checked out by a student. Return 1
+ * if available, 0 if not available
+ */
 int book_available(book *bk){
     if(bk->count >= 1 )
         return 1;
@@ -237,6 +274,11 @@ void create_wait_list(wait_list *wl){
 }
 
 
+/*
+ * Clears the wait list and returns it to it's initial position, with first and
+ * last pointing to -1. Frees the memory in the wait list memory bank of all
+ * nodes that were part of the wait list.
+ */
 void remove_wait_list(book *bk, book_list *bks){
     student * temp = NULL;
 
@@ -244,10 +286,15 @@ void remove_wait_list(book *bk, book_list *bks){
 
 }
 
+
+/*
+ * Adds the passed student as the last element in the passed wait list. Returns
+ * 1 if it was not possible to add student, 0 if student added.
+ */
 int add_to_waitlist(student *stud, book *bk, book_list *books){
     int index = get_node_waitlist(&books->wl);
     if (index == -1)
-        return 1;
+  return 1;
     books->wl.items[index].stud = stud;
     books->wl.items[index].next = -1;
     //list is currently empty
@@ -262,6 +309,12 @@ int add_to_waitlist(student *stud, book *bk, book_list *books){
     return 0;
 }
 
+
+/*
+ * Removes the first student from the waitlist and saves a pointer to the
+ * student in the passed value. Return 1 if it was not possible to remove
+ * student, 0 if student removed
+ */
 int remove_from_waitlist(book *bk, book_list *books, student **stud ){
     int first = bk->waitlist_first;
     //waitlist is empty
@@ -283,7 +336,12 @@ int remove_from_waitlist(book *bk, book_list *books, student **stud ){
     bk->waitlist_total --;
     return 0;
 }
-//1 if stud is on waitlist, 0 if no
+
+
+/*
+ * Checks if student is already on passed waitlist. Returns 1 if student is on
+ * wait list, 0 if not
+ */
 int is_on_waitlist(book *bk, book_list *books, student *stud){
     student *temp;
     int i;
@@ -298,6 +356,10 @@ int is_on_waitlist(book *bk, book_list *books, student *stud){
     return result;
 }
 
+/*
+ * Checks the waitlist for each book and removes the student from any wait list
+ * they belong to.
+ */
 void remove_student_all_waitlists(book_list *bks, student *stud){
     int book_index = bks->first;
     student *temp;

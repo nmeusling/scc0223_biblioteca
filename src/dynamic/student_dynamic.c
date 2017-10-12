@@ -1,6 +1,12 @@
-//
-// Created by nmeusling on 10/8/17.
-//
+/** @file student_dynamic.c
+ *  @brief Functions related to student and student list
+ *
+ *  Dynamic version:
+ *  This file contains all of the functions related to the student and student
+ *  list, including the functions for manipulating the email stack.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 #include "student_dynamic.h"
 
 /*
@@ -24,7 +30,6 @@ int create_student(student **stud, char name[MAX_NAME_SIZE],
         return 1;
     }
     create_email_stack(&s->emails);
-    //create_stud_bklist(&s->bks);
     strcpy(s->name, name);
     copy_int_array(s->nusp, nusp, MAX_NUSP_SIZE);
     copy_int_array(s->phone, phone, MAX_PHONE_SIZE);
@@ -34,9 +39,8 @@ int create_student(student **stud, char name[MAX_NAME_SIZE],
 }
 
 /*
- * Creates a new student with passed information and then adds student as the
- * last element of library's student list. Returns 1 if an error occurs,
- * otherwise returns 0.
+ * Adds passed student as the last element of library's student list.
+ * Returns 1 if an error occurs,otherwise returns 0.
  */
 void insert_student_to_list(student_list *students, student * s) {
 
@@ -53,7 +57,7 @@ void insert_student_to_list(student_list *students, student * s) {
 }
 
 /*
- * Searches for a student in the library's student list with passed name, if
+ * Searches for a student in the passed student list with passed name, if
  * found, pointer to the previous student in list is saved in prev_stud and 0
  * is returned. If it is not possible to find student, prev_stud will be Null
  * and 1 is returned.
@@ -81,7 +85,7 @@ int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
 
 
 /*
- * Searches for a student in the library's student list with passed nusp, if
+ * Searches for a student in the passed student list with passed nusp, if
  * found, pointer to the previous student in list is saved in prev_stud and 0
  * is returned. If it is not possible to find student, prev_stud will be Null
  * and 1 is returned.
@@ -109,7 +113,10 @@ int search_student_nusp(student_list *students, int nusp[MAX_NUSP_SIZE],
 }
 
 
-
+/*
+ * Removes the student after the passed student from the student list. Frees
+ * the memory allocated to the removed student.
+ */
 void remove_student_studentlist(student_list *students, student *prev_stud){
 
     student *stud = students->first;
@@ -168,7 +175,6 @@ int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
 }
 
 
-
 /*
  * Removes the top message. Saves message of removed email to the passed
  * parameter.
@@ -184,8 +190,6 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
 }
 
 
-
-
 /*
  * Clears the email stack and returns it to it's initial position, with top
  * pointing to NULL. Frees the memory of all nodes that were part of the
@@ -194,8 +198,8 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
 void delete_email_stack(email_stack *emls){
     char *message = NULL;
     while(pop_email(emls, message) == 0);
-
 }
+
 
 /*
  * Verifies if the email stack is empty
@@ -220,6 +224,7 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], studen
         *stud = (prev)->next;
     return 0;
 }
+
 
 /*
  * Searches for the student by nusp in the library's student list and saves the
@@ -246,6 +251,7 @@ void copy_int_array(int *array1, int *array2, int size) {
         array1[i] = array2[i];
     }
 }
+
 
 /* Compares the elements of array 1 with array 2. Returns 0 if they are the same,
  * 1 if they are different.

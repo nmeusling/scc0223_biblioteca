@@ -1,13 +1,12 @@
 /** @file library_static.h
  *  @brief Header file for library_static.c
  *
- *  This file contains the declaration for the library structs, including the
- *  student list, book list, and wait list. It also contains the prototypes for
- *  the operations that manipulate these lists.
+ *  Static version:
+ *  This file contains the declaration for the library struct as well as the
+ *  prototypes for the functions to manipulate the struct.
  *
  *  @author Natalie Menato (10295051)
  */
-
 
 #include "book_static.h"
 
@@ -35,13 +34,10 @@ typedef struct{
 void create_library(library *lib);
 
 
-
-
-/** @brief Creates a new student and adds it to student list of library
+/** @brief Calls functions to create student and add them to student list
  *
- * Allocates memory in memory bank for a new student. Saves the passed name,
- * nusp, phone, and email to the new student. Adds the new student to the end
- * of existing student list for the passed library.
+ * Calls the necessary functions to create a new student with the passed
+ * information and then add the student to the library's student list.
  *
  * @param library* lib pointer to the library
  * @param char[] name name of student to be added
@@ -54,6 +50,17 @@ int insert_student(library *lib, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
                    char email[MAX_EMAIL_SIZE]);
 
+
+/** @brief Calls functions to remove student from student list and any wait
+ * lists
+ *
+ * Calls the necessary functions to remove the student from the student list.
+ * The student is also removed from any wait lists that they are currently on.
+ *
+ * @param library* lib pointer to the library
+ * @param int prev_stud index of the previous student of student to be removed
+ * @return 1 if an error occurred, 0 if student removed successfully
+ */
 int remove_student(library *lib, int prev_stud);
 
 
@@ -64,8 +71,6 @@ int remove_student(library *lib, int prev_stud);
  *
  * @param library* lib pointer to the library where student will be removed
  * @param char[] name name of student to be removed
- * @param student** prev_stud pointer to the pointer of the previous student, will
- * be NULL if student is not in list or student is first element in list
  * @return 0 if student removed successfully, 1 otherwise
  */
 int remove_student_name(library *lib, char name[MAX_NAME_SIZE]);
@@ -78,21 +83,17 @@ int remove_student_name(library *lib, char name[MAX_NAME_SIZE]);
  *
  * @param library* lib pointer to the library where student will be removed
  * @param int[] nusp nusp of student to be removed
- * @param student** prev_stud pointer to the pointer of the previous student, will
- * be NULL if student is not in list or student is first element in list
  * @return 0 if student removed successfully, 1 otherwise
  */
 int remove_student_nusp(library *lib, int nusp[MAX_NUSP_SIZE]);
 
 
-
 /** @brief Creates a new book and adds it to library's book list
  *
- * Allocates memory in the memory bank for a new book. Saves the passed title,
- * author, editor, isbn, year, and edition to the new book. Adds the new book
- * to the end of existing book list of passed library. If the ISBN is
- * duplicated, a new record will not be added to the list. Instead the count of
- * books of the original will be incremented.
+ * Verifies if a book with the same ISBN number already exists. If so, the book
+ * count and total are incremented. Otherwise, calls the functions to create a
+ * new book and then adds the book to the end of existing book list of passed
+ * library.
  *
  * @param library* lib pointer to the library that contains the book list
  * @param char[] title title of the book to be added
@@ -108,11 +109,11 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition);
 
 
-
 /** @brief Removes book with title from the library's book list
  *
- * Uses search function to find previous book in library's book list and then
- * removes the desired book.
+ * Verifies if the total number of copies of the book the is more than 1. If so,
+ * total is decremented. Otherwise, calls the function to remove the book from
+ * the book list and then deletes the book.
  *
  * @param library* lib pointer to the library
  * @param char[] title title of book to be removed
@@ -123,11 +124,12 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]);
 
 /** @brief Removes book with ISBN from the library's book list
  *
- * Uses search function to find previous book in library's book list and then
- * removes the desired book.
+ * Verifies if the total number of copies of the book the is more than 1. If so,
+ * total is decremented. Otherwise, calls the function to remove the book from
+ * the book list and then deletes the book.
  *
  * @param library* lib pointer to the library
- * @param int[] isbn ISBN of book to be removed
+ * @param char[] title title of book to be removed
  * @return 0 if book removed successfully, 1 otherwise
  */
 int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]);
@@ -136,11 +138,14 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]);
 /** @brief Completes necessary actions to check out a book
  *
  * If book is available, decrements the number of available copies. If book is
- * not available, student is added to the wait list.
+ * not available, student is added to the wait list. If student is already on
+ * waitlist, they will not be added again.
  *
+ * @param library *lib pointer to library
  * @param student *stud student who is checking out book
  * @param book *bk book to be checked out
- * @return 1 if added to waitlist, 0 if book was available
+ * @return 3 if wait list is out of space, 2 if student is already on waitlist,
+ * 1 if student added to waitlist, 0 if book was available
  */
 int checkout_book(library *lib, student *stud, book *bk);
 

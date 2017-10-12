@@ -309,14 +309,16 @@ int menu_check_out_book(library *lib) {
         printf("\nLivro: %s", get_book_title(book));
         printf("Aluno: %s", get_stud_name(stud));
     }
-    else
+    else if(result == 2)
     {
         printf("\nO aluno ja esta na lista de espera para o livro!");
         printf("\nLivro: %s", get_book_title(book));
         printf("Aluno: %s", get_stud_name(stud));
     }
+    else{
+        printf("Nao tem espaco para adicionar o aluno na lista de espera!");
+    }
     return 0;
-
 }
 
 /*
@@ -355,15 +357,13 @@ int menu_return_book(library *lib) {
     }
     printf("\nO livro foi retornado!");
     printf("\nLivro: %s", get_book_title(bk));
-    if(return_book(lib, bk) ==1) {
+    if(return_book(lib, bk) == 1) {
         printf("O livro esta disponivel.");
     }else{
         printf("O proximo aluno na lista de espera foi notificado.");
     }
 
-
     return 0;
-
 }
 
 /*
@@ -411,7 +411,7 @@ int print_emails(library *lib){
 }
 
 /*
- * Prints all of the data related to the passed student.
+ * Prints all of the data related to the passed student. (Testing only)
  */
 void print_student(student *stud){
     int i;
@@ -431,32 +431,8 @@ void print_student(student *stud){
     printf("\nEmail: %s", stud->email);
 }
 
-///*
-// * Prints the data for each student in the student list.
-// */
-//void print_students(student_list *studs){
-//    student *stud = studs->first;
-//    while(stud != NULL) {
-//        print_student(stud);
-//        stud = stud->next;
-//    }
-//
-//}
-
-///*
-// * Prints the data for each student in the student list.
-// */
-//void print_students(student_list *studs){
-//    int index = studs->first;
-//    while(index != -1) {
-//        print_student(&studs->elements[index]);
-//        index = studs->elements[index].next;
-//    }
-//
-//}
-
 /*
- * Prints all of the data related to the passed book.
+ * Prints all of the data related to the passed book. (Testing only)
  */
 void print_book(book *bk) {
     int i;
@@ -473,8 +449,30 @@ void print_book(book *bk) {
     printf("\nEdicao: %d", bk->edition);
 }
 
-///*
-// * Prints the data for each book in the book list.
+// /*
+// * Prints the data for each student in the student list. (Dynamic version)
+// */
+//void print_students(student_list *studs){
+//    student *stud = studs->first;
+//    while(stud != NULL) {
+//        print_student(stud);
+//        stud = stud->next;
+//    }
+//}
+
+// /*
+// * Prints the data for each student in the student list. (Static version)
+// */
+//void print_students(student_list *studs){
+//    int index = studs->first;
+//    while(index != -1) {
+//        print_student(&studs->elements[index]);
+//        index = studs->elements[index].next;
+//    }
+//}
+
+// /*
+// * Prints the data for each book in the book list. (Dynamic version)
 // */
 //void print_books(book_list *bks){
 //    book *bk = bks->first;
@@ -482,10 +480,9 @@ void print_book(book *bk) {
 //        print_book(bk);
 //        bk = bk->next;
 //    }
-//
 //}
-///*
-// * Prints the data for each student in the student list.
+// /*
+// * Prints the data for each student in the student list. (Static version)
 // */
 //void print_books(book_list *bks){
 //    int index = bks->first;
@@ -493,6 +490,5 @@ void print_book(book *bk) {
 //        print_book(&bks->elements[index]);
 //        index = bks->elements[index].next;
 //    }
-//
-//
+
 //}

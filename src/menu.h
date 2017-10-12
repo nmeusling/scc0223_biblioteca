@@ -167,15 +167,6 @@ int print_emails(library *lib);
 void print_student(student *stud);
 
 
-/** @brief Prints the data of all the students in the student list
- *
- * Prints the name, numero usp, phone and email of each student in the list.
- *
- * @param student_list* studs list of all registered students
- */
-void print_students(student_list *studs);
-
-
 /** @brief Prints all of the data related to the passed book
  *
  * Prints the title, author, editor, ISBN, year, and edition of the book.
@@ -185,11 +176,22 @@ void print_students(student_list *studs);
 void print_book(book *bk);
 
 
-/** @brief Prints the data of all the books in the book list
- *
- * Prints the title, author, editor, ISBN, year, and edition of each book in
- * the list.
- *
- * @param sbook_list* bks list of all registered books
- */
-void print_books(book_list *bks);
+// /** @brief Prints the data of all the books in the book list
+// *
+// * Prints the title, author, editor, ISBN, year, and edition of each book in
+// * the list. Function is different for static and dynamic versions, only used
+// * for testing.
+// *
+// * @param sbook_list* bks list of all registered books
+// */
+//void print_books(book_list *bks);
+//
+// /** @brief Prints the data of all the students in the student list
+// *
+// * Prints the name, numero usp, phone and email of each student in the list.
+// * Function is different for static and dynamic versions, only used
+// * for testing.
+// *
+// * @param student_list* studs list of all registered students
+// */
+//void print_students(student_list *studs);

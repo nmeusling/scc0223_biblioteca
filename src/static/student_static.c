@@ -1,6 +1,12 @@
-//
-// Created by nmeusling on 10/8/17.
-//
+/** @file student_static.c
+ *  @brief Functions related to student and student list
+ *
+ *  Static version:
+ *  This file contains all of the functions related to the student and student
+ *  list, including the functions for manipulating the email stack.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 
 #include "student_static.h"
 
@@ -44,8 +50,11 @@ void free_node_studentlist(student_list *studs, int index){
     studs->first_empty =  index;
 }
 
+
 /*
- * Returns index of created student, -1 if student wasn't created
+ * Allocates memory for the student in the student memory bank and fills in
+ * details of student. Returns 1 if error occurred during memory allocation,
+ * 0 if created successfully.
  */
 int create_student(student_list *students, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
@@ -65,6 +74,10 @@ int create_student(student_list *students, char name[MAX_NAME_SIZE],
 }
 
 
+/*
+ * Adds passed student as the last element of library's student list.
+ * Returns 1 if an error occurs,otherwise returns 0.
+ */
 void insert_student_to_list(student_list *students, int index){
     students->elements[index].next = -1;
 
@@ -80,9 +93,10 @@ void insert_student_to_list(student_list *students, int index){
 
 
 /*
- * Searches for a student in the student list of the passed library whose name
- * is the same as the name passed to the function. Previous student in the list
- * is saved to passed parameter prev_stud.
+ * Searches for a student in the passed student list whose name is the same as
+ * the name passed to the function. Index of Previous student in the list is
+ * saved to passed parameter prev_stud. If it is not possible to find student,
+ * prev_stud will be -1 and 1 is returned. Returns 0 if student is found.
  */
 int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
                         int *prev_stud){
@@ -109,9 +123,10 @@ int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
 }
 
 /*
- * Searches for a student in the student list of the passed library whose nusp
- * is the same as the nusp passed to the function. Previous student in the list
- * is saved to passed parameter prev_stud.
+ * Searches for a student in the passed student list whose nusp is the same as
+ * the name nusp to the function. Index of Previous student in the list is
+ * saved to passed parameter prev_stud. If it is not possible to find student,
+ * prev_stud will be -1 and 1 is returned. Returns 0 if student is found.
  */
 int search_student_nusp(student_list *students, int nusp[MAX_NUSP_SIZE],
                         int *prev_stud){
@@ -137,6 +152,11 @@ int search_student_nusp(student_list *students, int nusp[MAX_NUSP_SIZE],
     return 1;
 }
 
+
+/*
+ * Removes the student after the passed student from the student list. Frees
+ * the index in the student memory bank allocated to the removed student.
+ */
 void remove_student_studentlist(student_list *students, int prev_stud){
     int index = students->first;
     //student is 1st element
@@ -168,12 +188,14 @@ char* get_stud_name(student *stud){
     return stud->name;
 }
 
+
 /*
  * Creates stack to store the email messages for a student.
  */
 void create_email_stack(email_stack *emls){
     emls->top = -1;
 }
+
 
 /*
  * Adds a new email with message to the email stack. Returns 1 if an error
@@ -188,6 +210,7 @@ int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     return 0;
 }
 
+
 /*
  * Removes the top message. Saves message of removed email to the passed
  * parameter.
@@ -201,6 +224,7 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
     return 0;
 }
 
+
 /*
  * Clears the email stack and returns it to it's initial position, with top
  * pointing to -1.
@@ -208,6 +232,7 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]){
 void delete_email_stack(email_stack *emls){
     emls->top = -1;
 }
+
 
 /*
  * Verifies if the email stack is empty
@@ -217,6 +242,7 @@ int isEmailEmpty(email_stack *emls){
         return 1;
     return 0;
 }
+
 
 /*
  * Searches for the student in the library's student list by name and saves the
@@ -235,6 +261,7 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], studen
     }
     return 0;
 }
+
 
 /*
  * Searches for the student in the library's student list by nusp and saves the

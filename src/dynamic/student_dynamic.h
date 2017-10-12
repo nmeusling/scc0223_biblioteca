@@ -1,6 +1,14 @@
-//
-// Created by nmeusling on 10/8/17.
-//
+/** @file student_dynamic.h
+ *  @brief Header file for student_dynamic.c
+ *
+ *  Dynamic version:
+ *  This file contains the declaration for the student struct and email struct.
+ *  It also contains the declaration of the student lists and email stack data
+ *  structures. It contains the prototypes for the operations that manipulate
+ *  structures.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 
 #define MAX_NAME_SIZE 100
 #define MAX_NUSP_SIZE 15
@@ -75,29 +83,48 @@ typedef struct {
 
 /** @brief Creates a new student list for library
  *
- * Initializes the student_list of passed library so that the other functions
- * for the student list can be used successfully.
+ * Initializes the passed student_list so that the other functions for the
+ * student list can be used successfully.
  *
- * @param library* lib pointer to the library
+ * @param student_list* students pointer to the student list
  */
 void create_stud_list(student_list *students);
 
+
+/** @brief Allocates memory for student and adds details.
+ *
+ * Allocates memory for a new student and saves all of the passed fields to
+ * the student's details.
+ *
+ * @param student** Used to return address of memory location
+ * @param char[]::name string that stores name of student
+ * @param int[]::nusp stores the numero USP of student
+ * @param int[]::phone stores the student's phone number
+ * @param char[]::email string that stores student's email
+ * @return 1 if error occurred, 0 if student created successfully
+ */
 int create_student(student **stud, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
                    char email[MAX_EMAIL_SIZE]);
 
+
+/** @brief Inserts student into the student list
+ *
+ * Passed student is added to the end of the passed student list.
+ *
+ * @param student_list* student list where student will be added
+ * @param student::s student that will be added
+ */
 void insert_student_to_list(student_list *students, student * s);
-
-
 
 
 /** @brief Searches for student with name in the student list
  *
- * Searches for a student in the student list of the passed library whose name
- * is the same as the name passed to the function. Previous student in the list
- * is saved to passed parameter prev_stud.
+ * Searches for a student in the passed student list whose name is the same as
+ * the name passed to the function. Previous student in the list is saved to
+ * passed parameter prev_stud.
  *
- * @param library* lib pointer to the library
+ * @param student_list* students pointer to the student list
  * @param char[] name name of student to be searched
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
@@ -109,23 +136,31 @@ int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
 
 /** @brief Searches for student with nusp in the student list
  *
- * Searches for a student in the student list of the passed library whose nusp
- * is the same as the nusp passed to the function. Previous student in the list
- * is saved to passed parameter prev_stud.
+ * Searches for a student in the passed student list whose nusp is the same as
+ * the nusp passed to the function. Previous student in the list is saved to
+ * passed parameter prev_stud.
  *
- * @param library* lib pointer to the library where student will be searched
+ * @param student_list* students pointer to the student list
  * @param int[] nusp nusp of student to be searched
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
- * @return 0 if student is found on list, 1 otherwise
+ * @return 0 if student is found on library's student list, 1 otherwise
  */
 int search_student_nusp(student_list *students, int nusp[MAX_NUSP_SIZE],
                         student **prev_stud);
 
 
-
-
+/** @brief Removes student from the student list
+ *
+ * Removes the student after the passed student from the student list. Frees
+ * the memory allocated to the removed student.
+ *
+ * @param student_list* students pointer to the student list
+ * @param student* prev_stud previous student of student who will be removed,
+ * NULL if student to be removed is first in list
+ */
 void remove_student_studentlist(student_list *students, student *prev_stud);
+
 
 /** @brief Returns the name of passed student
  *
@@ -165,9 +200,9 @@ int push_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
  * Removes the top message. Saves message of removed email to the passed
  * parameter.
  *
- * @param email stack* emls pointer to the email stack where message will be
+ * @param email_stack* emls pointer to the email stack where message will be
  * removed
- * @param char[] email message message that was removed from stack
+ * @param char[] message email message message that was removed from stack
  * @return 1 if it was not possible to remove email, 0 if email removed
  */
 int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
@@ -179,7 +214,7 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
  * pointing to NULL. Frees the memory of all nodes that were part of the
  * email stack.
  *
- * @param wait_list* wl wait list to be removed
+ * @param email_stack* emls email stack to be removed
  */
 void delete_email_stack(email_stack *emls);
 
@@ -220,6 +255,7 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], studen
  * @return 0 if student is found, 1 if not found
  */
 int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], student **stud);
+
 
 /** @brief Copies elements of an int array to a second int array
  *

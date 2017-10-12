@@ -1,6 +1,14 @@
-//
-// Created by nmeusling on 10/8/17.
-//
+/** @file book_dynamic.h
+ *  @brief Header file for book_dynamic.c
+ *
+ *  Dynamic version:
+ *  This file contains the declaration for the book struct and wait list entries.
+ *  It also contains the declaration of the book list and wait list data
+ *  structures. It contains the prototypes for the operations that manipulate
+ *  structures.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 
 #define MAX_TITLE_SIZE 100
 #define MAX_AUTHOR_SIZE 100
@@ -12,7 +20,7 @@
 
 /** @struct wait_list_entry
  *  @brief Node for wait list
- *  @var student::stud pointer to the student on wait list
+ *  @var student::stud
  *  @var wait_list_entry::next
  *  Member 'stud' pointer to the student on wait list
  *  Member 'next' pointer to the next student on wait list
@@ -25,10 +33,12 @@ typedef struct _wait_list_entry{
 
 /** @struct wait_list
  *  @brief Queue to store all students that are on the wait list for a book
- *  @var wait_list::first
- *  @var wait_list::last
+ *  @var wait_list_entry::first
+ *  @var wait_list_entry::last
+ *  @var int:total
  *  Member 'first' pointer to the first student node of wait list
  *  Member 'last' pointer to the last student node of wait list
+ *  Member 'total' number of students on waitlist
  */
 typedef struct {
     wait_list_entry *first, *last;
@@ -44,6 +54,7 @@ typedef struct {
  *  @var int::year
  *  @var int::edition
  *  @var int::count
+ *  @var int::total
  *  @var book*::next
  *  @var wait_list::wl
  *  Member 'title' string that stores title of book
@@ -52,6 +63,8 @@ typedef struct {
  *  Member 'isbn' array that stores the ISBN of book
  *  Member 'year' int that stores the year of book
  *  Member 'edition' int that stores the edition of book
+ *  Member 'count' int that stores the number of available books
+ *  Member 'total' int that stores the total number of books
  *  Member 'next' pointer to the next book in the book list
  *  Member 'wl' queue of students waiting to check out the book
  */
@@ -85,47 +98,49 @@ typedef struct {
  * Initializes a book_list in the library so that the other functions for the
  * book list can be used.
  *
- * @param library* lib pointer to the library where the book list will be
+ * @param book_list *books pointer to the book list to be initialized
  * initialized
  */
 void create_book_list(book_list *books);
 
 
+/** @brief Creates a new book
+ *
+ * Allocates memory for a new book and saves the passed fields to the book's
+ * details. Saves the address of the new book in *bk.
+ *
+ * @param book** bk pointer to the address of newly created book
+ * @param char[]::title string that stores title of book
+ * @param char[]::author string that stores the author of book
+ * @param char[]::editor string that stores the editor of book
+ * @param int[]::isbn array that stores the ISBN of book
+ * @param int::year int that stores the year of book
+ * @param int::edition int that stores the edition of book
+ * @return 1 if error occurred, 0 if book created with success
+ */
 int create_book(book **bk, char title[MAX_TITLE_SIZE],
                 char author[MAX_AUTHOR_SIZE], char editor[MAX_EDITOR_SIZE],
                 int isbn[MAX_ISBN_SIZE], int year, int edition);
 
 
-
-
-/** @brief Creates a new book and adds it to library's book list
+/** @brief Inserts book into book list
  *
- * Allocates memory for a new book. Saves the passed title, author, editor,
- * isbn, year, and edition to the new book. Adds the new book to the end of
- * existing book list of passed library. If the ISBN is duplicated, a new record
- * will not be added to the list. Instead the count of books of the original
- * will be incremented.
+ * Adds book to the end of the book list.
  *
- * @param library* lib pointer to the library that contains the book list
- * @param char[] title title of the book to be added
- * @param char[] author author of the book to be added
- * @param char[] editor editor of the book to be added
- * @param int[] isbn ISBN of the book to be added
- * @param int year year of the book to be added
- * @param int edition edition of the book to be added
- * @return 1 if an error occurred, 0 if student inserted successfully, 2 for dupliacte
+ * @param book_list* bks pointer to the book list where book will be added
+ * @param book *bk pointer of book to be added
  */
 void insert_book_booklist(book_list *books, book *bk);
 
 
 
-/** @brief Searches for book with title in the library's book list
+/** @brief Searches for book with title in the book list
  *
- * Searches for a book in the library's book list whose title is the same as the
+ * Searches for a book in the passed book list whose title is the same as the
  * title passed to the function. Previous book in the list is saved to passed
  * parameter prev_book.
  *
- * @param library* lib pointer to the library that contains book list
+ * @param book_list *books pointer to the book list where book will be searched
  * @param char[] title title of book to be searched
  * @param book** prev_book pointer to the pointer of the previous book, will
  * be NULL if book is not in list or book is first element in list
@@ -135,14 +150,14 @@ int search_book_title(book_list *books, char title[MAX_TITLE_SIZE],
                       book **prev_book);
 
 
-/** @brief Searches for book with ISBN in the library's book list
+/** @brief Searches for book with isbn in the book list
  *
- * Searches for a book in the library's book list whose ISBN is the same as the
- * ISBN passed to the function. Previous book in the list is saved to passed
+ * Searches for a book in the passed book list whose isbn is the same as the
+ * isbn passed to the function. Previous book in the list is saved to passed
  * parameter prev_book.
  *
- * @param library* lib pointer to the library
- * @param int[] isbn ISBN of book to be searched
+ * @param book_list *books pointer to the book list where book will be searched
+ * @param int[] isbn isbn of book to be searched
  * @param book** prev_book pointer to the pointer of the previous book, will
  * be NULL if book is not in list or book is first element in list
  * @return 0 if book is found on list, 1 otherwise
@@ -151,30 +166,39 @@ int search_book_isbn(book_list *books, int isbn[MAX_ISBN_SIZE],
                      book **prev_book);
 
 
+/** @brief Removes next book of passed book from list
+ *
+ * The next book after the passed book is removed from the list and the
+ * memory that was allocated to the book is freed.
+ *
+ * @param book_list *books pointer to the book list where book will be removed
+ * @param book** prev_book pointer to the pointer of the previous book, will
+ * be NULL to remove first book in list
+ * @return 0 if book is removed, 1 otherwise
+ */
 int remove_book_booklist(book_list *books, book *prev_book);
 
 
-
-/** @brief Searches for book and saves book to passed parameter if found
+/** @brief Gets book from book list with title
  *
  * Searches for the book in the library's book list by title and saves the book
  * to the passed book parameter if found.
  *
- * @param library* lib pointer to the library
+ * @param book_list *books pointer to book list that will be searched
  * @param char[] title title of book to search for
  * @param book **bk pointer to where the pointer to the found book will
  * be stored
- * @return 0 if student is found, 1 if not found
+ * @return 0 if book is found, 1 if not found
  */
 int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk);
 
 
-/** @brief Searches for book and saves book to passed parameter if found
+/** @brief Gets book from book list with isbn
  *
  * Searches for the book in the library's book list by isbn and saves the book
  * to the passed book parameter if found.
  *
- * @param library* lib pointer to the library
+ * @param book_list *books pointer to book list that will be searched
  * @param int[] isbn title of book to search for
  * @param book **bk pointer to where the pointer to the found book will
  * be stored
@@ -202,6 +226,7 @@ char* get_book_title(book *bk);
  */
 int book_available(book *bk);
 
+
 /** @brief Creates a wait list queue setting it to the correct initial position
  *
  * Initializes the wait list to it's initial position, with first and last
@@ -222,6 +247,7 @@ void create_wait_list(wait_list *wl);
  */
 void remove_wait_list(wait_list *wl);
 
+
 /** @brief Adds student to waitlist
  *
  * Adds the passed student as the last element in the passed wait list.
@@ -238,13 +264,22 @@ int add_to_waitlist(student *stud, wait_list *wl);
  * Removes the first student from the waitlist and saves a pointer to the
  * student in the passed value.
  *
- * @param student* stud pointer to student who was removed from wait list
+ * @param student** stud pointer to student who was removed from wait list
  * @param wait_list* wl pointer to wait list student will be removed from
  * @return 1 if it was not possible to remove student, 0 if student removed
  */
 int remove_from_waitlist(wait_list *wl, student **stud);
 
-int is_on_waitlist(book *bk, wait_list *wl, student *stud);
+
+/** @brief Checks if student is on waitlist
+ *
+ * Checks if student is already on passed waitlist
+ *
+ * @param wait_list* wl pointer to wait list student
+ * @param student** stud pointer to student who will be checked
+ * @return 1 if student is on wait list, 0 if not
+ */
+int is_on_waitlist(wait_list *wl, student *stud);
 
 /** @brief Removes the student from all wait lists
  *
@@ -255,8 +290,5 @@ int is_on_waitlist(book *bk, wait_list *wl, student *stud);
  * @param student *stud student to be removed
  */
 void remove_student_all_waitlists(book_list *bks, student *stud);
-
-int get_size_waitlist();
-
 
 

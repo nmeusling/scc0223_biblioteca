@@ -1,3 +1,15 @@
+/** @file student_dynamic.h
+ *  @brief Header file for student_dynamic.c
+ *
+ *  Static version:
+ *  This file contains the declaration for the student struct and email struct.
+ *  It also contains the declaration of the student lists and email stack data
+ *  structures. It contains the prototypes for the operations that manipulate
+ *  structures.
+ *
+ *  @author Natalie Menato (10295051)
+ */
+
 #define MAX_NAME_SIZE 100
 #define MAX_NUSP_SIZE 15
 #define MAX_PHONE_SIZE 15
@@ -80,10 +92,10 @@ typedef struct {
 
 /** @brief Creates a new student list for library
  *
- * Initializes the student_list of passed library so that the other functions
- * for the student list can be used successfully.
+ * Initializes the passed student_list so that the other functions for the
+ * student list can be used successfully.
  *
- * @param library* lib pointer to the library
+ * @param student_list* students pointer to the student list
  */
 void create_stud_list(student_list *students);
 
@@ -107,20 +119,42 @@ int get_node_studentlist(student_list *students);
  */
 void free_node_studentlist(student_list *students, int index);
 
+
+/** @brief Allocates memory for student and adds details.
+ *
+ * Allocates memory for a new student in the student list memory bank and saves
+ * all of the passed fields to the student's details.
+ *
+ * @param student_list* student list where student will be stored
+ * @param char[]::name string that stores name of student
+ * @param int[]::nusp stores the numero USP of student
+ * @param int[]::phone stores the student's phone number
+ * @param char[]::email string that stores student's email
+ * @return index of allocated space in student memory bank
+ */
 int create_student(student_list *students, char name[MAX_NAME_SIZE],
                    int nusp[MAX_NUSP_SIZE], int phone[MAX_PHONE_SIZE],
                    char email[MAX_EMAIL_SIZE]);
 
 
+/** @brief Inserts student into the student list
+ *
+ * Student stores at the passed index in the student memory bank is
+ * added to the end of the passed student list.
+ *
+ * @param student_list* student list where student will be added
+ * @param int::index index of desired student in student memory bank
+ */
 void insert_student_to_list(student_list *students, int index);
+
 
 /** @brief Searches for student with name in the student list
  *
- * Searches for a student in the student list of the passed library whose name
- * is the same as the name passed to the function. Previous student in the list
- * is saved to passed parameter prev_stud.
+ * Searches for a student in the passed student list whose name is the same as
+ * the name passed to the function. Index of previous student in the list is
+ * saved to passed parameter prev_stud.
  *
- * @param library* lib pointer to the library
+ * @param student_list* students pointer to the student list
  * @param char[] name name of student to be searched
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
@@ -132,20 +166,31 @@ int search_student_name(student_list *students, char name[MAX_NAME_SIZE],
 
 /** @brief Searches for student with nusp in the student list
  *
- * Searches for a student in the student list of the passed library whose nusp
- * is the same as the nusp passed to the function. Previous student in the list
- * is saved to passed parameter prev_stud.
+ * Searches for a student in the passed student list whose nusp is the same as
+ * the nusp passed to the function. Index of previous student in the list is
+ * saved to passed parameter prev_stud.
  *
- * @param library* lib pointer to the library where student will be searched
+ * @param student_list* students pointer to the student list
  * @param int[] nusp nusp of student to be searched
  * @param student** prev_stud pointer to the pointer of the previous student, will
  * be NULL if student is not in list or student is first element in list
- * @return 0 if student is found on list, 1 otherwise
+ * @return 0 if student is found on library's student list, 1 otherwise
  */
 int search_student_nusp(student_list *students, int nusp[MAX_NUSP_SIZE],
                         int *prev_stud);
 
+
+/** @brief Removes student from the student list
+ *
+ * Removes the student after the passed index from the student list. Frees
+ * the memory allocated to the removed student.
+ *
+ * @param student_list* students pointer to the student list
+ * @param int prev_stud index of previous student of student who will be removed,
+ * -1 if student to be removed is first in list
+ */
 void remove_student_studentlist(student_list *students, int prev_stud);
+
 
 /** @brief Returns the name of passed student
  *
@@ -156,10 +201,11 @@ void remove_student_studentlist(student_list *students, int prev_stud);
  */
 char* get_stud_name(student *stud);
 
+
 /** @brief Creates an email stack setting it to the correct initial position
  *
  * Initializes the email stack to it's initial position, with top pointing to
- * NULL.
+ * -1.
  *
  * @param email_stack* emls email stack to be created
  */
@@ -195,10 +241,9 @@ int pop_email(email_stack *emls, char message[MAX_MESSAGE_SIZE]);
 /** @brief Clears the email stack
  *
  * Clears the email stack and returns it to it's initial position, with top
- * pointing to NULL. Frees the memory of all nodes that were part of the
- * email stack.
+ * pointing to -1.
  *
- * @param wait_list* wl wait list to be removed
+ * @param email_stack* emls email stack to be removed
  */
 void delete_email_stack(email_stack *emls);
 
@@ -211,6 +256,7 @@ void delete_email_stack(email_stack *emls);
  * @return 1 if empty, 0 if not empty
  */
 int isEmailEmpty(email_stack *emls);
+
 
 /** @brief Searches for student and saves student to passed parameter if found
  *
@@ -238,6 +284,7 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], studen
  * @return 0 if student is found, 1 if not found
  */
 int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], student **stud);
+
 
 /** @brief Copies elements of an int array to a second int array
  *
