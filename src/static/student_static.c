@@ -222,15 +222,17 @@ int isEmailEmpty(email_stack *emls){
  * Searches for the student in the library's student list by name and saves the
  * student's index to the passed int parameter if found.
  */
-int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], int *index){
-    int prev;
+int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], student **stud){
+    int prev, next;
     //student not found
     if(search_student_name(students, name, &prev) == 1)
         return 1;
-    if(prev == NULL)
-        *index = (students->first);
-    else
-        *index = students->elements[prev].next;
+    if(prev == -1)
+        *stud = &students->elements[students->first];
+    else {
+        next = students->elements[prev].next;
+        *stud = &students->elements[next];
+    }
     return 0;
 }
 
@@ -238,15 +240,17 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], int *i
  * Searches for the student in the library's student list by nusp and saves the
  * student's index to the passed int parameter if found.
  */
-int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], int *index){
-    int prev;
+int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], student **stud){
+    int prev, next;
     //student not found
     if(search_student_nusp(students, nusp, &prev) == 1)
         return 1;
-    if(prev == NULL)
-        *index = (students->first);
-    else
-        *index = students->elements[prev].next;
+    if(prev == -1)
+        *stud = &students->elements[students->first];
+    else {
+        next = students->elements[prev].next;
+        *stud = &students->elements[next];
+    }
     return 0;
 }
 

@@ -255,5 +255,7 @@ int remove_from_waitlist(student *stud, wait_list *wl);
  */
 void remove_student_all_waitlists(book_list *bks, student *stud);
 
+int get_size_waitlist();
+
 
 

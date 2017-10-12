@@ -22,7 +22,7 @@ void print_home() {
  * Prints the possible menu actions.
  */
 void print_menu() {
-    printf("\n\nQual acao voce quer realizar?: \n" \
+    printf("\n\nQual acao voce gostaria de realizar?: \n" \
            "1. Cadastrar Aluno\n" \
            "2. Cadastrar Livro\n" \
            "3. Retirar Livro\n" \
@@ -90,6 +90,7 @@ int register_student(library *lib) {
         printf("\nNao foi possivel registrar o aluno!");
         return 1;
     }
+    printf("\nO aluno foi cadastrado no sistema!");
 
     return 0;
 }
@@ -176,9 +177,11 @@ int register_book(library *lib) {
         return 1;
     }
     else if(result == 2){
-        printf("\nUm livro com o mesmo ISBN ja existe. O novo livro vai ser considerado uma segunda copia do livro!");
+        printf("\nUm livro com o mesmo ISBN ja existe. \nO novo livro vai ser cadastrado como uma copia adicional do livro!");
     }
-
+    else{
+        printf("\nO livro foi cadastrado no sistema!");
+    }
     return 0;
 }
 
@@ -195,18 +198,18 @@ void remove_book(library *lib) {
             if (result == 1)
                 printf("\nNao foi possivel remover o livro!");
             else if(result == 2)
-                printf("\nUma das copias do livro foi removido!");
+                printf("\nUma copia do livro foi removido do sistema!");
             else
-                printf("\nLivro foi removido!");
+                printf("\nLivro foi removido do sistema!");
             break;
         case 2:
             result = menu_remove_book_isbn(lib);
             if (result == 1)
                 printf("\nNao foi possivel remover o livro!");
             else if(result == 2)
-                printf("\nUma das copias do livro foi removido!");
+                printf("\nUma copia do livro foi removido do sistema!");
             else
-                printf("\nLivro foi removido!");
+                printf("\nLivro foi removido do sistema!");
             break;
         default:
             return;
@@ -295,10 +298,16 @@ int menu_check_out_book(library *lib) {
     }
     if(book == NULL || stud == NULL)
         return 1;
-    if(checkout_book(stud, book) == 0)
-        printf("\nO livro foi retirado pelo aluno. \nTitulo: %sNome: %s", get_book_title(book), get_stud_name(stud));
-    else
-        printf("\nO aluno foi adicionado a lista de espera para o livro. \nTitulo: %sNome: %s", get_book_title(book), get_stud_name(stud));
+    if(checkout_book(lib, stud, book) == 0) {
+        printf("\nO livro foi retirado pelo aluno.");
+        printf("\nLivro: %s", get_book_title(book));
+        printf("Aluno: %s", get_stud_name(stud));
+    }
+    else {
+        printf("\nO aluno foi adicionado a lista de espera para o livro. ");
+        printf("\nLivro: %s", get_book_title(book));
+        printf("Aluno: %s", get_stud_name(stud));
+    }
     return 0;
 
 }
@@ -333,8 +342,10 @@ int menu_return_book(library *lib) {
     }
     if(bk == NULL)
         return 1;
-    return_book(bk);
-    printf("\nO livro foi retornado! \nTitulo: %s", get_book_title(bk));
+    return_book(lib, bk);
+    printf("\nO livro foi retornado!");
+    printf("\nLivro: %s", get_book_title(bk));
+
     return 0;
 
 }
@@ -403,17 +414,29 @@ void print_student(student *stud){
     printf("\nEmail: %s", stud->email);
 }
 
-/*
- * Prints the data for each student in the student list.
- */
-void print_students(student_list *studs){
-    student *stud = studs->first;
-    while(stud != NULL) {
-        print_student(stud);
-        stud = stud->next;
-    }
+///*
+// * Prints the data for each student in the student list.
+// */
+//void print_students(student_list *studs){
+//    student *stud = studs->first;
+//    while(stud != NULL) {
+//        print_student(stud);
+//        stud = stud->next;
+//    }
+//
+//}
 
-}
+///*
+// * Prints the data for each student in the student list.
+// */
+//void print_students(student_list *studs){
+//    int index = studs->first;
+//    while(index != -1) {
+//        print_student(&studs->elements[index]);
+//        index = studs->elements[index].next;
+//    }
+//
+//}
 
 /*
  * Prints all of the data related to the passed book.
@@ -433,14 +456,26 @@ void print_book(book *bk) {
     printf("\nEdicao: %d", bk->edition);
 }
 
-/*
- * Prints the data for each book in the book list.
- */
-void print_books(book_list *bks){
-    book *bk = bks->first;
-    while(bk != NULL) {
-        print_book(bk);
-        bk = bk->next;
-    }
-
-}
+///*
+// * Prints the data for each book in the book list.
+// */
+//void print_books(book_list *bks){
+//    book *bk = bks->first;
+//    while(bk != NULL) {
+//        print_book(bk);
+//        bk = bk->next;
+//    }
+//
+//}
+///*
+// * Prints the data for each student in the student list.
+// */
+//void print_books(book_list *bks){
+//    int index = bks->first;
+//    while(index != -1) {
+//        print_book(&bks->elements[index]);
+//        index = bks->elements[index].next;
+//    }
+//
+//
+//}

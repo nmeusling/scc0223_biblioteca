@@ -20,7 +20,6 @@ int main(){
     //create library
     library lib;
     create_library(&lib);
-
     //main loop for menu
     while(complete_action(&lib));
 

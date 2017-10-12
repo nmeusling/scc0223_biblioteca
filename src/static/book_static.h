@@ -63,7 +63,6 @@ typedef struct _book {
     int edition;
     int count; // 0 if none currently available (i.e. all books are checked out)
     int next;
-    wait_list wl;
     int waitlist_first, waitlist_last, waitlist_total;
 } book;
 
@@ -80,6 +79,7 @@ typedef struct _book {
 typedef struct {
     int first_empty, first, last;
     book elements[MAX_BOOKS];
+    wait_list wl;
 } book_list;
 
 int get_node_booklist(book_list *books);
@@ -150,7 +150,7 @@ int remove_book_booklist(book_list *books, int prev_book);
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], int *index);
+int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk);
 
 
 /** @brief Searches for book and saves book to passed parameter if found
@@ -164,7 +164,7 @@ int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], int *index);
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], int *index);
+int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], book **bk);
 
 
 /** @brief Returns the title of passed book
@@ -204,7 +204,7 @@ void create_wait_list(wait_list *wl);
  *
  * @param wait_list* wl wait list to be removed
  */
-void remove_wait_list(book *bk);
+void remove_wait_list(book *bk, book_list *bks);
 
 
 /** @brief Adds student to waitlist
@@ -215,7 +215,7 @@ void remove_wait_list(book *bk);
  * @param wait_list* wl pointer to wait list student will be added to
  * @return 1 if it was not possible to add student, 0 if student added
  */
-int add_to_waitlist(student *stud, book *bk);
+int add_to_waitlist(student *stud, book *bk, book_list *books);
 
 
 /** @brief Removes student from waitlist
@@ -227,7 +227,7 @@ int add_to_waitlist(student *stud, book *bk);
  * @param wait_list* wl pointer to wait list student will be removed from
  * @return 1 if it was not possible to remove student, 0 if student removed
  */
-int remove_from_waitlist(student *stud, book *bk);
+int remove_from_waitlist(student *stud, book *bk, book_list *books);
 
 
 /** @brief Removes the student from all wait lists

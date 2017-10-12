@@ -142,7 +142,7 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]);
  * @param book *bk book to be checked out
  * @return 1 if added to waitlist, 0 if book was available
  */
-int checkout_book(student *stud, book *bk);
+int checkout_book(library *lib, student *stud, book *bk);
 
 
 /** @brief Completes necessary actions to return a book
@@ -153,6 +153,6 @@ int checkout_book(student *stud, book *bk);
  *
  * @param book *bk book that was returned
  */
-void return_book(book *bk);
+void return_book(library *lib, book *bk);
 
 

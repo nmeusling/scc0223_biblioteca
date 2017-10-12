@@ -16,7 +16,7 @@
  *  @var char[]::message
  *  Member 'message' message of the email
  */
-typedef struct _email{
+typedef struct {
     char message[MAX_MESSAGE_SIZE] ;
 }email;
 
@@ -223,7 +223,7 @@ int isEmailEmpty(email_stack *emls);
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], int *index);
+int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], student **stud);
 
 
 /** @brief Searches for student and saves student to passed parameter if found
@@ -237,7 +237,7 @@ int get_student_by_name(student_list *students, char name[MAX_NAME_SIZE], int *i
  * be stored
  * @return 0 if student is found, 1 if not found
  */
-int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], int *index);
+int get_student_by_nusp(student_list *students, int nusp[MAX_NUSP_SIZE], student **stud);
 
 /** @brief Copies elements of an int array to a second int array
  *

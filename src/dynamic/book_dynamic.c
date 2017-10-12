@@ -258,5 +258,3 @@ void remove_student_all_waitlists(book_list *bks, student *stud){
 }
 
 
-
-

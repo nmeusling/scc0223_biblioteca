@@ -18,6 +18,7 @@
 void create_library(library *lib){
     create_stud_list(&lib->students);
     create_book_list(&lib->books);
+    create_wait_list(&lib->books.wl);
 }
 
 
@@ -97,7 +98,7 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
     int prev, index;
     //already exists book with same isbn
     if(search_book_isbn(&lib->books, isbn, &prev) == 0){
-        if(prev == NULL)
+        if(prev == -1)
             lib->books.elements[lib->books.first].count++;
         else {
             index = lib->books.elements[prev].next;
@@ -119,15 +120,15 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
  * removes the desired book.
  */
 int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
-    int bk = -1;
+    book *bk = NULL;
     int prev_book = -1;
 
     //book not found in list
     if (get_book_by_title(&lib->books, title, &bk) == 1) {
         return 1;
     }
-    if(lib->books.elements[bk].count > 1){
-        lib->books.elements[bk].count --;
+    if(bk->count > 1){
+        bk->count --;
         return 2;
     }
     return remove_book_booklist(&lib->books, prev_book);
@@ -138,15 +139,15 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
  * removes the desired book.
  */
 int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
-    int bk = -1;
+    book *bk = NULL;
     int prev_book = -1;
 
     //book not found in list
     if (get_book_by_isbn(&lib->books, isbn, &bk) == 1) {
         return 1;
     }
-    if(lib->books.elements[bk].count > 1){
-        lib->books.elements[bk].count --;
+    if(bk->count > 1){
+        bk->count --;
         return 2;
     }
     return remove_book_booklist(&lib->books, prev_book);
@@ -163,12 +164,12 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
  * @param book *bk book to be checked out
  * @return 1 if added to waitlist, 0 if book was available
  */
-int checkout_book(student *stud, book *bk){
+int checkout_book(library *lib, student *stud, book *bk){
     if(book_available(bk)) {
         bk->count--;
         return 0;
     }
-    add_to_waitlist(stud, bk);
+    add_to_waitlist(stud, bk, &lib->books);
     return 1;
 }
 
@@ -181,7 +182,7 @@ int checkout_book(student *stud, book *bk){
  *
  * @param book *bk book that was returned
  */
-void return_book(book *bk){
+void return_book(library *lib, book *bk){
     student *next;
     char message[MAX_MESSAGE_SIZE] = "Um livro esta pronto para voce retirar!\nTitulo:";
     if(bk->waitlist_first == -1){
@@ -189,9 +190,9 @@ void return_book(book *bk){
     }
     else{
         strcat(message, bk->title);
-        next = bk->wl.items[bk->waitlist_first].stud;
+        next = lib->books.wl.items[bk->waitlist_first].stud;
         push_email(&next->emails, message);
-        remove_from_waitlist(next, bk);
+        remove_from_waitlist(next, bk, &lib->books);
     }
 }
 

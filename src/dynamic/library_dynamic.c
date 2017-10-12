@@ -150,7 +150,7 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]) {
  * If book is available, decrements the number of available copies. If book is
  * not available, student is added to the wait list.
  */
-int checkout_book(student *stud, book *bk){
+int checkout_book(library *lib, student *stud, book *bk){
     if(book_available(bk)) {
         bk->count--;
         return 0;
@@ -164,7 +164,7 @@ int checkout_book(student *stud, book *bk){
  * If book has a waitlist, sends an email to the next student and removes them
  * from wait list.
  */
-void return_book(book *bk){
+void return_book(library *lib, book *bk){
     student *next;
     char message[MAX_MESSAGE_SIZE] = "Um livro esta pronto para voce retirar!\nTitulo:";
     if(bk->wl.first == NULL){

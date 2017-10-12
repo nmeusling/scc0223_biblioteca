@@ -74,7 +74,6 @@ int create_book(book_list *books, char title[MAX_TITLE_SIZE],
     if (index == -1) {
         return index;
     }
-    create_wait_list(&books->elements[index].wl);
     strcpy(books->elements[index].title, title);
     strcpy(books->elements[index].author, author);
     strcpy(books->elements[index].editor, editor);
@@ -82,6 +81,9 @@ int create_book(book_list *books, char title[MAX_TITLE_SIZE],
     books->elements[index].year = year;
     books->elements[index].edition = edition;
     books->elements[index].count = 1;
+    books->elements[index].waitlist_first = -1;
+    books->elements[index].waitlist_last = -1;
+    books->elements[index].waitlist_total = 0;
     return index;
 }
 
@@ -164,7 +166,7 @@ int remove_book_booklist(book_list *books, int prev_book){
         return 1;
     //book is 1st element
     if (prev_book == -1) {
-        remove_wait_list(&books->elements[index]);
+        remove_wait_list(&books->elements[index], books);
         books->first = books->elements[index].next;
         //book was only element, list is not empty
         if (books->first == -1)
@@ -180,30 +182,34 @@ int remove_book_booklist(book_list *books, int prev_book){
     }
     index = books->elements[prev_book].next;
     books->elements[prev_book].next = books->elements[index].next;
-    remove_wait_list(&books->elements[index]);
+    remove_wait_list(&books->elements[index], books);
     free_node_booklist(books, index);
     return 0;
 }
 
-int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], int *index){
-    int prev;
+int get_book_by_title(book_list *books, char title[MAX_TITLE_SIZE], book **bk){
+    int prev, next;
     if(search_book_title(books, title, &prev) == 1)
         return 1;
     if(prev == -1)
-        *index = books->first;
-    else
-        *index = books->elements[prev].next;
+        *bk = &books->elements[books->first];
+    else {
+        next = books->elements[prev].next;
+        *bk = &books->elements[next];
+    }
     return 0;
 }
 
-int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], int *index){
-    int prev;
+int get_book_by_isbn(book_list *books, int isbn[MAX_ISBN_SIZE], book **bk){
+    int prev, next;
     if(search_book_isbn(books, isbn, &prev) == 1)
         return 1;
     if(prev == -1)
-        *index = books->first;
-    else
-        *index = books->elements[prev].next;
+        *bk = &books->elements[books->first];
+    else {
+        next = books->elements[prev].next;
+        *bk = &books->elements[next];
+    }
     return 0;
 }
 
@@ -230,48 +236,49 @@ void create_wait_list(wait_list *wl){
 }
 
 
-void remove_wait_list(book *bk){
+void remove_wait_list(book *bk, book_list *bks){
     student * temp = NULL;
-    while(remove_from_waitlist(temp, bk) == 0);
+
+    while(remove_from_waitlist(temp, bk, bks) == 0);
 
 }
 
-int add_to_waitlist(student *stud, book *bk){
-    int index = get_node_waitlist(&bk->wl);
+int add_to_waitlist(student *stud, book *bk, book_list *books){
+    int index = get_node_waitlist(&books->wl);
     if (index == -1)
         return 1;
-    bk->wl.items[index].stud = stud;
-    bk->wl.items[index].next = -1;
+    books->wl.items[index].stud = stud;
+    books->wl.items[index].next = -1;
     //list is currently empty
     if(bk->waitlist_first == -1){
         bk->waitlist_first = index;
     }
     else {
-        bk->wl.items[bk->waitlist_last].next = index;
+        books->wl.items[bk->waitlist_last].next = index;
     }
     bk->waitlist_last = index;
     bk->waitlist_total ++;
     return 0;
 }
 
-int remove_from_waitlist(student *stud, book *bk){
+int remove_from_waitlist(student *stud, book *bk, book_list *books){
     int first = bk->waitlist_first;
     //waitlist is empty
     if(first == -1)
         return 1;
 
     //save student that will be removed
-    *stud = *bk->wl.items[first].stud;
+    *stud = *books->wl.items[first].stud;
     //if student is only one on waitlist
-    if(bk->wl.items[first].next == -1){
+    if(books->wl.items[first].next == -1){
         bk->waitlist_first = -1;
         bk->waitlist_last = -1;
     }
     else {
-        int next = bk->wl.items[first].next;
+        int next = books->wl.items[first].next;
         bk->waitlist_first = next;
     }
-    free_node_waitlist(&bk->wl, first);
+    free_node_waitlist(&books->wl, first);
     bk->waitlist_total --;
     return 0;
 }
@@ -284,9 +291,9 @@ void remove_student_all_waitlists(book_list *bks, student *stud){
     //for all books
     while(book_index != -1){
         for(i = 0; i<bks->elements[book_index].waitlist_total;i++){
-            remove_from_waitlist(temp, &(bks->elements[book_index]));
+            remove_from_waitlist(temp, &(bks->elements[book_index]), bks);
             if(temp != stud){
-                add_to_waitlist(temp, &(bks->elements[book_index]));
+                add_to_waitlist(temp, &(bks->elements[book_index]), bks);
             }
         }
         book_index = bks->elements[book_index].next;
