@@ -98,11 +98,14 @@ int insert_book(library *lib, char title[MAX_TITLE_SIZE],
     int prev, index;
     //already exists book with same isbn
     if(search_book_isbn(&lib->books, isbn, &prev) == 0){
-        if(prev == -1)
+        if(prev == -1) {
             lib->books.elements[lib->books.first].count++;
+            lib->books.elements[lib->books.first].total++;
+        }
         else {
             index = lib->books.elements[prev].next;
             lib->books.elements[index].count++;
+            lib->books.elements[lib->books.first].total++;
         }
         return 2;
     }
@@ -133,8 +136,9 @@ int remove_book_title(library *lib, char title[MAX_TITLE_SIZE]){
     else {
         bk = lib->books.elements[prev_book].next;
     }
-    if(lib->books.elements[bk].count >= 1){
+    if(lib->books.elements[bk].total >= 1){
         lib->books.elements[bk].count --;
+        lib->books.elements[bk].total --;
         return 2;
     }
     return remove_book_booklist(&lib->books, prev_book);
@@ -158,8 +162,9 @@ int remove_book_isbn(library *lib, int isbn[MAX_ISBN_SIZE]){
     else {
         bk = lib->books.elements[prev_book].next;
     }
-    if(lib->books.elements[bk].count >= 1){
+    if(lib->books.elements[bk].total >= 1){
         lib->books.elements[bk].count --;
+        lib->books.elements[bk].total --;
         return 2;
     }
     return remove_book_booklist(&lib->books, prev_book);
@@ -190,21 +195,24 @@ int checkout_book(library *lib, student *stud, book *bk){
  *
  * If book does not have a waitlist, increments the number of available copies.
  * If book has a waitlist, sends an email to the next student and removes them
- * from wait list.
+ * from wait list. Returns 1 if no student on waitlist, 0 if next student was
+ * notified.
  *
  * @param book *bk book that was returned
  */
-void return_book(library *lib, book *bk){
+int return_book(library *lib, book *bk){
     student *next;
     char message[MAX_MESSAGE_SIZE] = "Um livro esta pronto para voce retirar!\nTitulo:";
     if(bk->waitlist_first == -1){
         bk->count ++;
+        return 1;
     }
     else{
         strcat(message, bk->title);
         next = lib->books.wl.items[bk->waitlist_first].stud;
         push_email(&next->emails, message);
         remove_from_waitlist(bk, &lib->books, &next);
+        return 0;
     }
 }
 

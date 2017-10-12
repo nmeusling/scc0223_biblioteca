@@ -81,6 +81,7 @@ int create_book(book_list *books, char title[MAX_TITLE_SIZE],
     books->elements[index].year = year;
     books->elements[index].edition = edition;
     books->elements[index].count = 1;
+    books->elements[index].total = 1;
     books->elements[index].waitlist_first = -1;
     books->elements[index].waitlist_last = -1;
     books->elements[index].waitlist_total = 0;

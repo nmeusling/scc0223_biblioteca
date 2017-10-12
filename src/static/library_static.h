@@ -149,10 +149,11 @@ int checkout_book(library *lib, student *stud, book *bk);
  *
  * If book does not have a waitlist, increments the number of available copies.
  * If book has a waitlist, sends an email to the next student and removes them
- * from wait list.
+ * from wait list. Returns 1 if no student on waitlist, 0 if next student was
+ * notified.
  *
  * @param book *bk book that was returned
  */
-void return_book(library *lib, book *bk);
+int return_book(library *lib, book *bk);
 
 

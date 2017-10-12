@@ -327,14 +327,14 @@ int menu_return_book(library *lib) {
         case 1:
             get_title(title);
             if(get_book_by_title(&lib->books, title, &bk) == 1){
-                printf("\nNao foi possivel achar o livro!");
+                printf("\nO livro nao esta cadastrado. Nao foi possivel retornar!");
                 return 1;
             }
             break;
         case 2:
             get_isbn(isbn);
             if(get_book_by_isbn(&lib->books, isbn, &bk) == 1){
-                printf("\nNao foi possivel achar o livro!");
+                printf("\nO livro nao esta cadastrado. Nao foi possivel retornar!");
                 return 1;
             }
         default:
@@ -342,9 +342,18 @@ int menu_return_book(library *lib) {
     }
     if(bk == NULL)
         return 1;
-    return_book(lib, bk);
+    if(bk->count == bk->total){
+        printf("\nTodas as copias do livro ja estao na biblioteca. Nao foi possivel retornar!");
+        return 1;
+    }
     printf("\nO livro foi retornado!");
     printf("\nLivro: %s", get_book_title(bk));
+    if(return_book(lib, bk) ==1) {
+        printf("O livro esta disponivel.");
+    }else{
+        printf("O proximo aluno na lista de espera foi notificado.");
+    }
+
 
     return 0;
 

@@ -26,6 +26,7 @@ int create_book(book **bk, char title[MAX_TITLE_SIZE],
     b->year = year;
     b->edition = edition;
     b->count = 1;
+    b->total = 1;
     *bk = b;
     return 0;
 

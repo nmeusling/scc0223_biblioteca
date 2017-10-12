@@ -62,6 +62,7 @@ typedef struct _book {
     int year;
     int edition;
     int count; // 0 if none currently available (i.e. all books are checked out)
+    int total;
     int next;
     int waitlist_first, waitlist_last, waitlist_total;
 } book;
