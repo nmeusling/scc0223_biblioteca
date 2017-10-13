@@ -17,16 +17,12 @@
 int main(){
     print_home();
 
-    //create student and book lists
-    student_list students;
-    book_list books;
-
-    //initialize the lists
-    create_stud_list(&students);
-    create_book_list(&books);
+    //create library
+    library lib;
+    create_library(&lib);
 
     //main loop for menu
-    while(complete_action(&students, &books));
+    while(complete_action(&lib));
 
 }
 
