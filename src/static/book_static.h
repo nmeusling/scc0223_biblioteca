@@ -1,5 +1,5 @@
-/** @file book_dynamic.h
- *  @brief Header file for book_dynamic.c
+/** @file book_static.h
+ *  @brief Header file for book_static.c
  *
  *  Static version:
  *  This file contains the declaration for the book struct and wait list entries.

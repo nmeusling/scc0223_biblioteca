@@ -1,5 +1,4 @@
 # scc0223_biblioteca
-Repository for first assignment in SCC0223 -Estruturas de Dados
 
 Implementation of a library control system with features that allow user to
 register students, register books, check out books, return books, remove

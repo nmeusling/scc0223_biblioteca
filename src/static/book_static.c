@@ -1,6 +1,12 @@
-//
-// Created by nmeusling on 10/8/17.
-//
+/** @file book_static.c
+ *  @brief Functions related to book and book list
+ *
+ *  Static version:
+ *  This file contains all of the functions related to the book and book
+ *  list, including the functions for manipulating the wait lists.
+ *
+ *  @author Natalie Menato (10295051)
+ */
 
 #include "book_static.h"
 

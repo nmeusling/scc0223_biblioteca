@@ -1,9 +1,9 @@
-/** @file student_dynamic.c
- *  @brief Functions related to student and student list
+/** @file book_dynamic.c
+ *  @brief Functions related to book and book list
  *
  *  Dynamic version:
- *  This file contains all of the functions related to the student and student
- *  list, including the functions for manipulating the email stack.
+ *  This file contains all of the functions related to the book and book
+ *  list, including the functions for manipulating the wait lists.
  *
  *  @author Natalie Menato (10295051)
  */

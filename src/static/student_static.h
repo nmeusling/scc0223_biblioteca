@@ -1,5 +1,5 @@
-/** @file student_dynamic.h
- *  @brief Header file for student_dynamic.c
+/** @file student_static.h
+ *  @brief Header file for student_static.c
  *
  *  Static version:
  *  This file contains the declaration for the student struct and email struct.
